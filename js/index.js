@@ -1,5 +1,9 @@
 Vue.config.devtools = true;
 
+/**
+ * check out Brython for running python code
+ * https://brython.info/
+ */
 var supportedLangs = {
     "python": `def myfunc():
     print("Hello World!")
@@ -18,7 +22,7 @@ var mirrorApp = new Vue(
         data: {
             allLangs: supportedLangs,
             language: "python",
-            theme: "dracula",
+            theme: "darcula",
         },
         methods: {
             updateLanguage: function (language) {
@@ -35,11 +39,14 @@ var mirrorApp = new Vue(
                 editor = new createEditor(this.language, this.theme);
             },
             getVersion() {
-                return 
+                if (editor != null)
+                    return editor.version;
+                else 
+                    return null;
             }
         },
         template: `
-        <div class="container bg-dark rounded">
+        <div class="container fill-height bg-dark rounded">
             <div class="nav bg-dark">
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                     <label class="btn btn-secondary active" @click="updateLanguage('python')">
@@ -54,7 +61,6 @@ var mirrorApp = new Vue(
                 </div>
             </div>
             <textarea name="editor" id="editor" width="auto" ></textarea>
-            
         </div>
         `,
     }
@@ -83,6 +89,6 @@ function createEditor(language, highlighting) {
             });
 }
 
-var editor = new createEditor("python", "dracula");
+var editor = new createEditor("python", "darcula");
 
 editor.setSize("500", "400");

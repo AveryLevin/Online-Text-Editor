@@ -1,5 +1,13 @@
 .CodeMirror {
     border: 1px solid #eee;
-    height: auto;
+    height: calc(100% - 50px) !important;
     width: 100% !important;
   }
+
+  html, body {
+    height: 100%;
+  }
+
+  .fill-height {
+    height: 88% !important; /* cross-browser */
+}
