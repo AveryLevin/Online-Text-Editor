@@ -33,6 +33,9 @@ var mirrorApp = new Vue(
                 editor.toTextArea();
                 document.getElementById('editor').value = "";
                 editor = new createEditor(this.language, this.theme);
+            },
+            getVersion() {
+                return 
             }
         },
         template: `
@@ -51,6 +54,7 @@ var mirrorApp = new Vue(
                 </div>
             </div>
             <textarea name="editor" id="editor" width="auto" ></textarea>
+            
         </div>
         `,
     }
