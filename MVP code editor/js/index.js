@@ -15,6 +15,51 @@ var supportedLangs = {
     `,
 };
 
+var allLanguages = [
+    {
+        name: "python",
+        dispName: "Python",
+        active: true
+    },
+    {
+        name: "javascript",
+        dispName: "Javascript",
+        active: false
+    },
+    {
+        name: "xml",
+        dispName: "HTML",
+        active: false
+    }
+]
+
+Vue.component('language-button',
+    {
+        delimiters: ['[[', ']]'],
+        data: function () {
+            return null;
+        },
+        props: {
+            language: Object
+        },
+        methods: {
+            updateLang: function () {
+                if (!this.language.active) {
+                    this.$emit('new-language', this.language)
+                }
+            }
+        },
+        template: `
+        <label v-if="this.language.active" class="btn btn-secondary active" @click="this.updateLang">
+            <input type="radio" name="options" id="option1" checked> [[this.language.dispName]]
+        </label>
+        <label v-else class="btn btn-secondary" @click="this.updateLang">
+            <input type="radio" name="options" id="option1"> [[this.language.dispName]]
+        </label>
+    `
+    }
+)
+
 var mirrorApp = new Vue(
     {
         delimiters: ['[[', ']]'],
@@ -26,7 +71,11 @@ var mirrorApp = new Vue(
         },
         methods: {
             updateLanguage: function (language) {
-                this.language = language;
+                this.language = language.name;
+                allLanguages.forEach(element => {
+                    element.active = false;
+                });
+                language.active = true;
                 this.updateEditor();
             },
             updateTheme: function (theme) {
@@ -41,7 +90,7 @@ var mirrorApp = new Vue(
             getVersion() {
                 if (editor != null)
                     return editor.version;
-                else 
+                else
                     return null;
             }
         },
@@ -49,15 +98,11 @@ var mirrorApp = new Vue(
         <div class="container fill-height bg-dark rounded">
             <div class="nav bg-dark">
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="btn btn-secondary active" @click="updateLanguage('python')">
-                        <input type="radio" name="options" id="option1" checked> Python
-                    </label>
-                    <label class="btn btn-secondary " @click="updateLanguage('javascript')">
-                        <input type="radio" name="options" id="option2" > Javascript
-                    </label>
-                    <label class="btn btn-secondary" @click="updateLanguage('xml')">
-                        <input type="radio" name="options" id="option3"> HTML
-                    </label>
+                    <language-button 
+                    v-for="lang in allLanguages"
+                    v-bind:language="lang"
+                    v-on:new-language="updateLanguage">
+                    </language-button>
                 </div>
             </div>
             <textarea name="editor" id="editor" width="auto" ></textarea>
