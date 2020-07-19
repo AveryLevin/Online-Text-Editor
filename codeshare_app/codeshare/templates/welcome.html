@@ -12,6 +12,10 @@ Codeshare Home
 
 
 {% block body %}
-{% include 'logged_out.html' %}
+{% if logged_in %}
+    {% include 'logged_in.html' %}
+{% else %}
+    {% include 'logged_out.html' %}
+{% endif %}
 <h1>WELCOME PAGE</h1>
 {% endblock %}

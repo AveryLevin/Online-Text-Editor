@@ -12,8 +12,11 @@
     
 
 {% block body %}
-    <!-- TODO: check if logged in to use specific navbar-->
+{% if logged_in %}
+    {% include 'logged_in.html' %}
+{% else %}
     {% include 'logged_out.html' %}
+{% endif %}
     <h1>QUICK EDIT</h1>
 {% endblock %}
     

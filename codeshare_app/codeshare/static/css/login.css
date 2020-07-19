@@ -5,6 +5,12 @@ body {
     background-size:cover;
 }
 
+a.disabled {
+  color: rgb(194, 194, 194);
+  pointer-events: none;
+  cursor: default;
+}
+
 .wrapper {
     display: flex;
     align-items: center;
