@@ -44,6 +44,7 @@ body {
     width: 100%;
     margin: 16px 16px 0 32px;
     position: relative;
+    font-size: larger;
 }
 
 .projects-content {
@@ -107,4 +108,22 @@ body {
 .affiliated-users-list-container {
     background-color: white;
     box-shadow: 2px 2px 2px 0 rgba(40, 40, 40, 0.35);
+}
+
+.user-pane-title {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: larger;
+}
+
+.user-pane-list {
+    height: calc(100% - 150px);
+    background-color: rgb(220 220 220);
+}
+
+.user-button-panel {
+    margin-top: 26px;
+    bottom: 0px;
+    text-align: center;
 }
