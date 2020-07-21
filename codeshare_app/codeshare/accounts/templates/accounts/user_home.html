@@ -2,7 +2,8 @@
 
 
 {% block head %}
-
+{% load static %}
+<link rel="stylesheet" href="{% static 'accounts/css/home.css' %}">
 {% endblock %}
 
 
@@ -12,6 +13,95 @@ Codeshare Home
 
 
 {% block body %}
-{% include 'logged_in.html' %}
-<h1>USER HOME</h1>
+<div class="full-page w-100 h-100">
+    {% include 'logged_in.html' %}
+
+    <main class="user-home-layout layout-gray-back">
+        <div class="grid">
+            <div class="user_home-root-vue">
+                <div class="container-fluid" style="height: 100%;">
+                    <div class="row" style="height: 100%;">
+                        <div class="projects-list-container col-9">
+                            <div class="projects-header">
+                                Your Recent Projects
+                            </div>
+                            <div class="projects-content">
+                                <div class="project-icon">
+                                    {% load static %}
+                                    <img src="{% static 'accounts/imgs/code_light.png' %}" alt="">
+                                    <div class="proj-title">Hello World Project</div>
+                                    <div class="date-created">
+                                        <div class="label">created:</div>
+                                        Jul 4, 2020
+                                    </div>
+                                    <div class="date-edited">
+                                        <div class="label">last opened:</div>
+                                        Jul 19, 2020
+                                    </div>
+                                </div>
+                                <div class="project-icon">
+                                    {% load static %}
+                                    <img src="{% static 'accounts/imgs/code_light.png' %}" alt="">
+                                    <div class="proj-title">Snake Project</div>
+                                    <div class="date-created">
+                                        <div class="label">created:</div>
+                                        Jul 4, 2020
+                                    </div>
+                                    <div class="date-edited">
+                                        <div class="label">last opened:</div>
+                                        Jul 19, 2020
+                                    </div>
+                                </div>
+                                <div class="project-icon">
+                                    {% load static %}
+                                    <img src="{% static 'accounts/imgs/code_light.png' %}" alt="">
+                                    <div class="proj-title">Mini-dict Project</div>
+                                    <div class="date-created">
+                                        <div class="label">created:</div>
+                                        Jul 4, 2020
+                                    </div>
+                                    <div class="date-edited">
+                                        <div class="label">last opened:</div>
+                                        Jul 19, 2020
+                                    </div>
+                                </div>
+                                <div class="project-icon">
+                                    {% load static %}
+                                    <img src="{% static 'accounts/imgs/code_light.png' %}" alt="">
+                                    <div class="proj-title">Algorithms Project</div>
+                                    <div class="date-created">
+                                        <div class="label">created:</div>
+                                        Jul 4, 2020
+                                    </div>
+                                    <div class="date-edited">
+                                        <div class="label">last opened:</div>
+                                        Jul 19, 2020
+                                    </div>
+                                </div>
+                                <div class="project-icon">
+                                    {% load static %}
+                                    <img src="{% static 'accounts/imgs/code_light.png' %}" alt="">
+                                    <div class="proj-title">Final Project</div>
+                                    <div class="date-created">
+                                        <div class="label">created:</div>
+                                        Jul 4, 2020
+                                    </div>
+                                    <div class="date-edited">
+                                        <div class="label">last opened:</div>
+                                        Jul 19, 2020
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="affiliated-users-list-container col">
+                            <h1>PLACEHOLDER</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
 {% endblock %}

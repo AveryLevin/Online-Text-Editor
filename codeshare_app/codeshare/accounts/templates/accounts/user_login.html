@@ -4,7 +4,7 @@
 {% block head %}
 
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
 
 
 {% endblock %}
@@ -28,7 +28,7 @@ Codeshare Login
         </svg>
         <br>
         <h2> Login </h2>
-        <form id="login_form" action="{% url 'accounts:user_login' %}" method="post">
+        <form id="login_form" action="{% url 'account:user_login' %}" method="post">
             <div class="form-group">
                 <label for="InputUsername">Username</label>
                 <input type="text" name="username" class="form-control" id="InputUsername"

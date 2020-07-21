@@ -55,7 +55,7 @@ def user_login(request):
             if user.is_active:
                 # valid and active
                 login(request, user)
-                return HttpResponseRedirect(reverse('accounts:user_home'))
+                return HttpResponseRedirect(reverse('account:user_home'))
             else:
                 return HttpResponse("This account has been disabled.")
         else:
@@ -63,7 +63,7 @@ def user_login(request):
             return HttpResponse("Invalid login details supplied")
     else:
         if request.user != None and request.user.is_authenticated and request.user.is_active:
-            return HttpResponseRedirect(reverse('accounts:user_home'))
+            return HttpResponseRedirect(reverse('account:user_home'))
         context = {}
         return render(request, 'accounts/user_login.html', context)
 
@@ -87,9 +87,9 @@ def user_create(request):
             'logged_in': False,
             'user': user
         }
-        return render(request, 'page_not_found.html')
+        return render(request, 'accounts/user_create.html', context)
 
-    return render(request, 'accounts/user_create.html', context)
+
 
 
 def user_pref(request):

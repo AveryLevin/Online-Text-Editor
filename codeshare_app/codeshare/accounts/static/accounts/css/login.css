@@ -1,7 +1,7 @@
 
 body {
     height: 50vh;
-    background:linear-gradient(0deg, rgba(169, 223, 255, 0.97), rgba(169, 223, 255, 0.97)), url("../imgs/code.jpg");
+    background: linear-gradient(0deg, rgba(231, 245, 255, 0.97), rgba(231, 245, 255, 0.97)), url(../imgs/code.jpg);
     background-size:cover;
 }
 
@@ -19,6 +19,7 @@ a.disabled {
     width: 100%;
     min-height: 100%;
     padding: 20px;
+    padding-top: 100px;
   }
   
   #form-content {
