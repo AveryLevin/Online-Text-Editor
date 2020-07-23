@@ -42,8 +42,7 @@ Vue.component('project-item', {
     },
     template: `
     <div class="project-icon">
-        {% load static %}
-        <img src="{% static 'accounts/imgs/code_light.png' %}" alt="">
+        <img src="/static/accounts/imgs/code_light.png" alt="">
         <div class="proj-title">
             [[ projectItem.name]]
         </div>
@@ -98,7 +97,7 @@ Vue.component('user-item', {
 
 var app = new Vue({
     delimiters: ['[[', ']]'],
-    el: '#app',
+    el: '.user_home-root-vue',
     data: function () {
         return {
             userHomeData: userHomeData
@@ -134,7 +133,7 @@ var app = new Vue({
                                 <!-- TODO: create for loop for user list. -->
                                 <user-item
                                 v-for="user in this.affiliatedUsers" 
-                                v-bind:user-item="user"></user-item>
+                                v-bind:user="user"></user-item>
                             </ul>
                             <div class="container user-button-panel">
                                 <button type="button" class="btn btn-light">Find Other Users</button>
