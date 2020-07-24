@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
-{% block head %}
 
+{% block head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'projects/css/project_home.css' %}">
 {% endblock %}
 
 
@@ -11,6 +13,20 @@ Codeshare Login
 
 
 {% block body %}
-{% include 'logged_in.html' %}
-<h1>PROJECT HOME</h1>
+<div class="full-page w-100 h-100">
+    {% include 'logged_in.html' %}
+
+    <main class="proj-home-layout layout-gray-back">
+        <div class="grid">
+            <div class="proj_home-root-vue">
+                
+            </div>
+        </div>
+    </main>
+</div>
+
+{% load static %}
+<!-- brings vue library into page-->
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="{% static 'projects/scripts/project_home.js' %}"></script>
 {% endblock %}

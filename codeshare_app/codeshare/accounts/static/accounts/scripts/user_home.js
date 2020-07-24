@@ -119,7 +119,7 @@ var app = new Vue({
                                 Recent Projects
                             </div>
                             <div class="projects-content">
-                                <!-- TODO: create for loop for project list. -->
+                                <!-- for loop for project list. -->
                                 <project-item
                                 v-for="project in this.projects" 
                                 v-bind:project-item="project"></project-item>
@@ -130,7 +130,7 @@ var app = new Vue({
                                 Affiliated Users
                             </div>
                             <ul class="list-group user-pane-list">
-                                <!-- TODO: create for loop for user list. -->
+                                <!-- for loop for user list. -->
                                 <user-item
                                 v-for="user in this.affiliatedUsers" 
                                 v-bind:user="user"></user-item>
