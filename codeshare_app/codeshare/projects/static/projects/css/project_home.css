@@ -39,9 +39,9 @@ body {
     width: 100%;
 }
 
-.proj_container {
+.proj-container {
     background-color: white;
-    box-shadow: 2px 2px 2px 0 rgba(40, 40, 40, 0.35);
+    box-shadow: 1px 1px 4px 0 rgba(40, 40, 40, 0.35);
 }
 
 .proj_main-container {
@@ -57,16 +57,19 @@ body {
 }
 
 .proj-toolbar {
-    width: auto;
+    width: calc(100% + 30px);
+    margin-left: -15px;
     height: 50px;
     padding: 15px;
+    background-color: #f3f3f3;
 }
 
 .control-icon {
     color: gray;
-    float: left;
+    float: right;
     margin-right: 12px;
-    margin-left: 12px;
+    margin-left: 12px;    
+    transform: translate(0, -3px);
 }
 
 .control-icon:hover {
@@ -75,10 +78,22 @@ body {
 }
 
 .search-bar {
-    float: right;
+    float: left;
     transform: translate(0px, -9px);
 }
 
+.extras-panel {
+    width: 100%;
+    height: 100%;
+}
+
+.contributers-panel {
+    margin-right: -15px;
+    height: calc(100% - 0px);
+    min-height: 200px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
 /* ----------------------------------------------------------------------------------------------------------------------------- */
 
 
