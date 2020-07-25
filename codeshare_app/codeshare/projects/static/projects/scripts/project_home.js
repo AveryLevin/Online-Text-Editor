@@ -15,6 +15,39 @@ var sampleBreadcrumData = [
     },
 ]
 
+var sampleFileData = [
+    {
+        displayName: "Folder A",
+        edited: "Apr 7, 2017",
+        created: "Oct 17, 2015",
+        fileType: "folder",
+    },
+    {
+        displayName: "Folder B",
+        edited: "Apr 7, 2017",
+        created: "Oct 17, 2015",
+        fileType: "folder",
+    },
+    {
+        displayName: "main.py",
+        edited: "Apr 7, 2017",
+        created: "Oct 17, 2015",
+        fileType: "python",
+    },
+    {
+        displayName: "helper1.py",
+        edited: "Apr 7, 2017",
+        created: "Oct 17, 2015",
+        fileType: "python",
+    },
+    {
+        displayName: "helper2.py",
+        edited: "Apr 7, 2017",
+        created: "Oct 17, 2015",
+        fileType: "python",
+    },
+]
+
 Vue.component('breadcrumb-item', {
     delimiters: ['[[', ']]'],
     data: function () {
@@ -49,6 +82,35 @@ Vue.component('breadcrumb-item', {
     }
 });
 
+Vue.component('file-item', {
+    delimiters: ['[[', ']]'],
+    props: {
+        fileItem: Object,
+        selected: Boolean,
+    },
+    data: function () {
+        return {
+            img_url: "/static/projects/imgs/" + this.fileItem.fileType + ".png"
+        }
+    },
+    template: `
+    <div class="file-item">
+        <img :src="this.img_url" alt="" style="width: 32px; height: 32px;">
+        <div class="name-list">
+            <div class="name2">[[ fileItem.displayName ]]</div><div class="edited2">[[ fileItem.edited ]]</div><div class="created2">[[ fileItem.created ]]</div>
+        </div>
+    </div>
+    `,
+    computed: {
+
+    },
+    methods: {
+        
+    }
+});
+
+
+
 var app = new Vue({
     delimiters: ['[[', ']]'],
     el: '.proj_home-root-vue',
@@ -66,6 +128,9 @@ var app = new Vue({
         },
         affiliatedUsers: function () {
             return sampleUserData;
+        },
+        fileData: function () {
+            return sampleFileData;
         }
     },
     template: `
@@ -110,6 +175,18 @@ var app = new Vue({
                                                 <path fill-rule="evenodd" d="M13 12.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0v-2z"/>
                                             </svg>
                                         </div>
+                                    </div>
+                                    <div class="file-explorer"> 
+                                        
+                                        <div class="file-exp-header container-fluid">
+                                            <div class="name">Name</div><div class="edited">Edited</div><div class="created">Created</div>
+                                        </div>
+
+                                        <file-item
+                                        v-for="file in fileData"
+                                        v-bind:file-item="file"
+                                        v-bind:selected="false"></file-item>
+
                                     </div>
                                 </div>
                                 <div class="extras-panel col-4">

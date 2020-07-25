@@ -16,6 +16,36 @@ var sampleProjectData = [
         createDate: 'Oct 12, 2019',
         lastEditDate: 'Jul 15, 2020',
     },
+    {
+        name: 'RepeatMe Project',
+        createDate: 'Oct 12, 2019',
+        lastEditDate: 'Jul 15, 2020',
+    },
+    {
+        name: 'RepeatMe Project',
+        createDate: 'Oct 12, 2019',
+        lastEditDate: 'Jul 15, 2020',
+    },
+    {
+        name: 'RepeatMe Project',
+        createDate: 'Oct 12, 2019',
+        lastEditDate: 'Jul 15, 2020',
+    },
+    {
+        name: 'RepeatMe Project',
+        createDate: 'Oct 12, 2019',
+        lastEditDate: 'Jul 15, 2020',
+    },
+    {
+        name: 'RepeatMe Project',
+        createDate: 'Oct 12, 2019',
+        lastEditDate: 'Jul 15, 2020',
+    },
+    {
+        name: 'RepeatMe Project',
+        createDate: 'Oct 12, 2019',
+        lastEditDate: 'Jul 15, 2020',
+    },
 ]
 
 var sampleUserData = [
@@ -113,33 +143,33 @@ var app = new Vue({
     },
     template: `
     <div class="container-fluid" style="height: 100%;">
-                    <div class="row" style="height: 100%;">
-                        <div class="projects-list-container col-9">
-                            <div class="projects-header">
-                                Recent Projects
-                            </div>
-                            <div class="projects-content">
-                                <!-- for loop for project list. -->
-                                <project-item
-                                v-for="project in this.projects" 
-                                v-bind:project-item="project"></project-item>
-                            </div>
-                        </div>
-                        <div class="affiliated-users-list-container col">
-                            <div class="container user-pane-title">
-                                Affiliated Users
-                            </div>
-                            <ul class="list-group user-pane-list">
-                                <!-- for loop for user list. -->
-                                <user-item
-                                v-for="user in this.affiliatedUsers" 
-                                v-bind:user="user"></user-item>
-                            </ul>
-                            <div class="container user-button-panel">
-                                <button type="button" class="btn btn-light">Find Other Users</button>
-                            </div>
-                        </div>
-                    </div>
+        <div class="row" style="height: 100%;">
+            <div class="projects-list-container col-9">
+                <div class="projects-header">
+                    Recent Projects
                 </div>
+                <div class="projects-content overflow-auto">
+                    <!-- for loop for project list. -->
+                    <project-item
+                    v-for="project in this.projects" 
+                    v-bind:project-item="project"></project-item>
+                </div>
+            </div>
+            <div class="affiliated-users-list-container col">
+                <div class="container user-pane-title">
+                    Affiliated Users
+                </div>
+                <ul class="list-group user-pane-list">
+                    <!-- for loop for user list. -->
+                    <user-item
+                    v-for="user in this.affiliatedUsers" 
+                    v-bind:user="user"></user-item>
+                </ul>
+                <div class="container user-button-panel">
+                    <button type="button" class="btn btn-light">Find Other Users</button>
+                </div>
+            </div>
+        </div>
+    </div>
     `
 });
