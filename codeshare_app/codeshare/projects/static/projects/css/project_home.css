@@ -163,6 +163,22 @@ body {
     margin-left: -15px;
     margin-right: -15px;
 }
+
+.list-group-item {
+    cursor: pointer;
+}
+
+.list-group-item:hover {    
+    background-color: rgb(228, 228, 228);
+}
+
+.select {
+    background-color: rgb(174, 212, 240) !important;
+}
+
+.select:hover {
+    background-color: rgb(153, 187, 212) !important;
+}
 /* ----------------------------------------------------------------------------------------------------------------------------- */
 
 

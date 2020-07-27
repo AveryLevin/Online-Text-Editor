@@ -90,7 +90,7 @@ Vue.component('breadcrumb-item', {
     },
     props: {
         breadcrumb: Object,
-        active: Boolean,
+        active: Boolean
     },
     template: `
         <li 
@@ -111,7 +111,7 @@ Vue.component('breadcrumb-item', {
 
     },
     methods: {
-        
+
     }
 });
 
@@ -119,15 +119,17 @@ Vue.component('file-item', {
     delimiters: ['[[', ']]'],
     props: {
         fileItem: Object,
-        selected: Boolean,
     },
     data: function () {
         return {
+            selected: false,
             img_url: "/static/projects/imgs/" + this.fileItem.fileType + ".png"
         }
     },
     template: `
-    <div class="file-item">
+    <div class="file-item"
+    v-bind:class="{select : selected}"
+    @click="toggleSelect">
         <img :src="this.img_url" alt="" style="width: 32px; height: 32px;">
         <div class="name-list">
             <div class="name2">[[ fileItem.displayName ]]</div><div class="edited2">[[ fileItem.edited ]]</div><div class="created2">[[ fileItem.created ]]</div>
@@ -138,7 +140,13 @@ Vue.component('file-item', {
 
     },
     methods: {
-        
+        toggleSelect: function () {
+            if (this.selected) {
+                this.selected = false;
+            } else {
+                this.selected = true;
+            }
+        },
     }
 });
 
@@ -146,14 +154,16 @@ Vue.component('user-item', {
     delimiters: ['[[', ']]'],
     data: function () {
         return {
-
+            selected: false
         }
     },
     props: {
         user: Object,
     },
     template: `
-    <li class="list-group-item">
+    <li class="list-group-item"
+        v-bind:class="{select : selected}"
+    @click="toggleSelect">
         <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-person-circle"
             fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="color: gray;">
             <path
@@ -169,7 +179,13 @@ Vue.component('user-item', {
 
     },
     methods: {
-        
+        toggleSelect: function () {
+            if (this.selected) {
+                this.selected = false;
+            } else {
+                this.selected = true;
+            }
+        },
     }
 });
 
@@ -246,8 +262,7 @@ var app = new Vue({
 
                                         <file-item
                                         v-for="file in fileData"
-                                        v-bind:file-item="file"
-                                        v-bind:selected="false"></file-item>
+                                        v-bind:file-item="file"></file-item>
 
                                     </div>
                                 </div>
