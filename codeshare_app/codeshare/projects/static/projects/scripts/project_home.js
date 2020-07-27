@@ -290,6 +290,9 @@ var app = new Vue({
                                             v-bind:user="user"></user-item>
                                         </div>
                                     </div>
+                                    <div class="submit-panel">
+                                        <button type="button" class="btn btn-success">Publish</button
+                                    </div>
                                 </div>
                             </div>
                         </div>

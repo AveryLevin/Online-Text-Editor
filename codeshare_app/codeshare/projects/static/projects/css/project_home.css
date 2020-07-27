@@ -94,7 +94,7 @@ body {
 
 .contributers-panel {
     margin-right: -15px;
-    height: calc(50% - 0px);
+    height: calc(80% - 0px);
     min-height: 200px;
     padding-left: 15px;
     padding-right: 15px;
@@ -178,6 +178,20 @@ body {
 
 .select:hover {
     background-color: rgb(153, 187, 212) !important;
+}
+
+.submit-panel {
+    margin-top: 15px;
+    height: calc(20% - 15px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.submit-panel .btn {
+    width: 60%;
+    height: 40%;
+    min-height: 50px;
 }
 /* ----------------------------------------------------------------------------------------------------------------------------- */
 
