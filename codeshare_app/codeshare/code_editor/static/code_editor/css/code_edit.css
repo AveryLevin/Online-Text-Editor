@@ -1,0 +1,177 @@
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+}
+
+.full-page {
+    position: absolute;
+}
+
+.layout-gray-back {
+    background-color: #f5f5f5;
+}
+
+.proj-home-layout {
+    position: relative;
+    margin-top: 60px;
+    height: calc(100% - 60px);
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-grow: 1;
+    z-index: 0;
+}
+
+.grid {
+    height: 100%;
+    padding: 25px;
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0 auto;
+}
+
+.proj_home-root-vue {
+    width: 100%;
+}
+
+.proj-container {
+    background-color: white;
+    box-shadow: 1px 1px 4px 0 rgba(40, 40, 40, 0.35);
+}
+
+.proj_main-container {
+    padding: 15px;
+    min-width: 730px;
+    max-width: 90% !important;
+}
+
+.project-panel {
+    min-width: 220px;
+    height: calc(100% - 0px);
+    background-color: rgb(220, 220, 220);
+}
+
+.breadcrumb-header {
+    margin: -15px;
+}
+
+.breadcrumb-list {
+    background-color: #d9dcdc;
+    border-radius: 0 !important;
+}
+
+.proj-toolbar {
+    width: calc(100% + 30px);
+    margin-left: -15px;
+    height: 50px;
+    padding: 15px;
+    background-color: #f3f3f3;
+}
+
+.control-icon {
+    color: gray;
+    float: right;
+    margin-right: 12px;
+    margin-left: 12px;    
+    transform: translate(0, -3px);
+}
+
+.control-icon:hover {
+    cursor: pointer;
+    color: black;
+}
+
+.search-bar {
+    float: left;
+    transform: translate(0px, -9px);
+}
+
+.code-panel {
+    width: 100%;
+    height: 100%;
+    max-width: calc(100% - 220px);
+    padding: 0;
+}
+
+.contributers-panel {
+    margin-right: -15px;
+    height: calc(80% - 0px);
+    min-height: 200px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+
+.file-explorer {
+    height: calc(100% - 50px);
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.file-item {
+    cursor: pointer;
+    border-bottom: solid 1px rgb(228, 228, 228);
+    background-color: white;
+    height: 35px;
+    padding-left: 5px;
+}
+
+.file-item:hover {
+    background-color: rgb(228, 228, 228);
+}
+
+.name-list {
+    display: grid;
+    height: 35px;
+    width: calc(100% - 32px);
+    float: right;
+    align-content: space-evenly;
+    grid-template-columns: 100%;
+    grid-gap: 0px;
+    padding: 4px;
+}
+
+.name2 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-list {
+    height: calc(100% - 50px);
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.list-group-item {
+    cursor: pointer;
+}
+
+.list-group-item:hover {    
+    background-color: rgb(228, 228, 228);
+}
+
+.select {
+    background-color: rgb(174, 212, 240) !important;
+}
+
+.select:hover {
+    background-color: rgb(153, 187, 212) !important;
+}
+
+.code-editor {
+    height: calc(100% - 0px);
+    padding: 0;
+}
+
+.CodeMirror {
+    height: calc(100% - 0px) !important;
+    font-size: large;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+/* ----------------------------------------------------------------------------------------------------------------------------- */
