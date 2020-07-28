@@ -161,13 +161,21 @@ html, body {
 .code-editor {
     height: calc(100% - 0px);
     padding: 0;
-    max-height: 600px;
+}
+
+.editor-wraper {
+    flex:1 1 auto;
+    margin-top:0;
+    height:100%;
+    position: relative;
 }
 
 .CodeMirror {
-    height: calc(100% - 0px) !important;
-    font-size: large;
-    overflow-y: hidden;
-    overflow-x: auto;
+    position: absolute !important;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    height:100% !important;
 }
 /* ----------------------------------------------------------------------------------------------------------------------------- */
