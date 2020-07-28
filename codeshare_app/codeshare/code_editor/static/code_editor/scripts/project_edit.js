@@ -229,7 +229,7 @@ var app = new Vue({
                                     </div>
                                 </div>
                                 <div class="code-panel col-11">
-                                    <div class="code-editor container-fluid fill-width bg-light">
+                                    <div class="code-editor container fill-width bg-light">
                                         <div class="cade-nav nav bg-light"></div>
                                         <textarea name="editor" id="editor" width="auto" ></textarea>
                                     </div>
