@@ -63,7 +63,9 @@ var sampleUserData = [
 
 
 var userProjsData = JSON.parse(document.getElementById('user-projs').textContent);
+var affiliatedUsers = JSON.parse(document.getElementById('aff-users').textContent);
 console.log(userProjsData);
+console.log(affiliatedUsers);
 
 Vue.component('project-item', {
     delimiters: ['[[', ']]'],
@@ -143,7 +145,7 @@ var app = new Vue({
             return userProjsData;
         },
         affiliatedUsers: function () {
-            return sampleUserData;
+            return affiliatedUsers;
         }
     },
     template: `

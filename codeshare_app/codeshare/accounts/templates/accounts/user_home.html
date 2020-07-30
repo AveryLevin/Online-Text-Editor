@@ -15,6 +15,7 @@ Codeshare Home
 {% block body %}
 
 {{ projects|json_script:"user-projs" }}
+{{ affiliated_users|json_script:"aff-users" }}
 
 <div class="full-page w-100 h-100">
     {% include 'logged_in.html' %}

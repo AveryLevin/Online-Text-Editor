@@ -42,18 +42,41 @@ def format_months(mo_num_string):
 
     return mo_dict[mo_num_string]
 
-def put_projs_in_json_format(projs):
-    projs_json = []
-    for proj in projs:
-        projs_json.append(
-            {
-                'name': proj.name,
-                'createDate': format_months(proj.start_date.strftime("%m")) + proj.start_date.strftime(" %d, %Y"),
-                'lastEditDate': format_months(proj.start_date.strftime("%m")) + proj.start_date.strftime(" %d, %Y"),
-            }
-        )
-    return projs_json
+def put_in_json_format(objs, item_type):
+    json = []
+    if item_type == 'projects':
+        for proj in objs:
+            json.append(
+                {
+                    'name': proj.name,
+                    'createDate': format_months(proj.start_date.strftime("%m")) + proj.start_date.strftime(" %d, %Y"),
+                    'lastEditDate': format_months(proj.start_date.strftime("%m")) + proj.start_date.strftime(" %d, %Y"),
+                }
+            )
+    elif item_type == 'users':
+        for user in objs:
+            json.append(
+                {
+                    'name': user.user.username,
+                }
+            )
 
+    return json
+
+def get_contributers(proj):
+    return proj.accessors.all()
+
+def get_affiliated_users(user):
+    affiliated_users = []
+    for proj in get_user_projs(user):
+        affiliated_users.extend(get_contributers(proj))
+    
+    r_val = []
+    
+    for user in affiliated_users:
+        if user not in r_val:
+            r_val.append(user)
+    return r_val
 
 # === VIEWS ===
 @login_required()
@@ -65,9 +88,10 @@ def user_home(request):
         context = {
             'logged_in': True,
             'user': user,
-            'projects': put_projs_in_json_format(get_user_projs(user)),
+            'projects': put_in_json_format(get_user_projs(user), 'projects'),
+            'affiliated_users': put_in_json_format(get_affiliated_users(user), 'users'),
         }
-        
+
         return render(request, 'accounts/user_home.html', context)
     else:
         return render(request, 'page_not_found.html')
