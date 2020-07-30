@@ -12,7 +12,8 @@ class Project(models.Model):
     accessors = models.ManyToManyField(
         UserAccount, blank=True, related_name='accessible_projects')
     # accessor_permissions =
-    start_date = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateTimeField(auto_now_add=True, editable=False)
+    modified_date = models.DateTimeField(auto_now=True)
     soft_deleted = models.BooleanField()
     # contents = one-to-many(ProjItem)
 

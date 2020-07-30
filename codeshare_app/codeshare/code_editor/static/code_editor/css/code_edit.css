@@ -158,16 +158,42 @@ html, body {
     background-color: rgb(153, 187, 212) !important;
 }
 
+.activefile {
+    background-color: #e7f1f8 !important;
+    cursor: initial;
+}
+
 .code-editor {
     height: calc(100% - 0px);
     padding: 0;
 }
 
+.code-nav {
+    height: 51px;
+    background-color: #e7f1f8;
+    transform: translate(0px, -1px);
+}
+
+.open-file-name {
+    align-self: center;
+    margin-left: 10px;
+    width: calc(100% - 75px);
+}
+
+.open-file-name img {
+    margin-right: 4px;
+}
+
+.save-btn {
+    right: 0px;
+}
+
 .editor-wraper {
     flex:1 1 auto;
     margin-top:0;
-    height:100%;
+    height: calc(100% - 50px);
     position: relative;
+    transform: translate(0px, -1px);
 }
 
 .CodeMirror {

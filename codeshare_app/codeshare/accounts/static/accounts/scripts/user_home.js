@@ -60,6 +60,11 @@ var sampleUserData = [
     },
 ]
 
+
+
+var userProjsData = JSON.parse(document.getElementById('user-projs').textContent);
+console.log(userProjsData);
+
 Vue.component('project-item', {
     delimiters: ['[[', ']]'],
     data: function () {
@@ -135,7 +140,7 @@ var app = new Vue({
     },
     computed: {
         projects: function () {
-            return sampleProjectData;
+            return userProjsData;
         },
         affiliatedUsers: function () {
             return sampleUserData;
