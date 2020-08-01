@@ -4,9 +4,9 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import User, UserAccount
+from .forms import UserForm, UserAccountForm
 from projects.models import Project
 # Create your views here.
-
 
 # === UTILITIES ===
 
@@ -49,6 +49,7 @@ def put_in_json_format(objs, item_type):
             json.append(
                 {
                     'name': proj.name,
+                    'id': proj.id,
                     'createDate': format_months(proj.start_date.strftime("%m")) + proj.start_date.strftime(" %d, %Y"),
                     'lastEditDate': format_months(proj.start_date.strftime("%m")) + proj.start_date.strftime(" %d, %Y"),
                 }
@@ -142,8 +143,18 @@ def user_create(request):
             'logged_in': True,
             'user': user
         }
-        return render(request, 'accounts/user_home.html', context)
+        return user_home(request)
     else:
+        # gives status of registration
+        registered = False
+
+        username = None
+        # if user is posting data, check forms for info
+        if request.method == 'POST':
+            # read raw data from forms
+            user_form = UserForm(data=request.POST)
+            profile_form = UserProfileForm(data=request.POST)
+            
         context = {
             'logged_in': False,
             'user': user

@@ -13,6 +13,11 @@ Codeshare Login
 
 
 {% block body %}
+
+
+{{ project_data|json_script:"proj-data" }}
+
+
 <div class="full-page w-100 h-100">
     {% include 'logged_in.html' %}
 

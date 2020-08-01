@@ -78,7 +78,8 @@ Vue.component('project-item', {
         projectItem: Object,
     },
     template: `
-    <div class="project-icon">
+    <div class="project-icon"
+    @click="openProject">
         <img src="/static/accounts/imgs/code_light.png" alt="">
         <div class="proj-title">
             [[ projectItem.name]]
@@ -97,7 +98,9 @@ Vue.component('project-item', {
 
     },
     methods: {
-        
+        openProject: function() {
+            window.location.href = "/projects/proj_" + this.projectItem.id;
+        }
     }
 });
 
@@ -137,7 +140,6 @@ var app = new Vue({
     el: '.user_home-root-vue',
     data: function () {
         return {
-            userHomeData: userHomeData
         }
     },
     computed: {

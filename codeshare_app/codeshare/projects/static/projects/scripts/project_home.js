@@ -79,7 +79,10 @@ var sampleUserData = [
     {
         name: 'Tom Leir',
     },
-]
+];
+
+
+var userProjsData = JSON.parse(document.getElementById('proj-data').textContent);
 
 Vue.component('breadcrumb-item', {
     delimiters: ['[[', ']]'],
