@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .models import User, UserAccount
 from .forms import UserForm, UserAccountForm
 from projects.models import Project
+from codeshare.utils import put_in_json_format
 # Create your views here.
 
 # === UTILITIES ===
@@ -23,46 +24,6 @@ def get_user_projs(user):
         for proj in user.owned_projects.all():
             projs.append(proj)
     return projs
-
-def format_months(mo_num_string):
-    mo_dict = {
-        "01": "Jan",
-        "02": "Feb",
-        "03": "Mar",
-        "04": "Apr",
-        "05": "May",
-        "06": "Jun",
-        "07": "Jul",
-        "08": "Aug",
-        "09": "Sep",
-        "10": "Oct",
-        "11": "Nov",
-        "12": "Dec",
-    }
-
-    return mo_dict[mo_num_string]
-
-def put_in_json_format(objs, item_type):
-    json = []
-    if item_type == 'projects':
-        for proj in objs:
-            json.append(
-                {
-                    'name': proj.name,
-                    'id': proj.id,
-                    'createDate': format_months(proj.start_date.strftime("%m")) + proj.start_date.strftime(" %d, %Y"),
-                    'lastEditDate': format_months(proj.start_date.strftime("%m")) + proj.start_date.strftime(" %d, %Y"),
-                }
-            )
-    elif item_type == 'users':
-        for user in objs:
-            json.append(
-                {
-                    'name': user.user.username,
-                }
-            )
-
-    return json
 
 def get_contributers(proj):
     return proj.accessors.all()
@@ -92,7 +53,7 @@ def user_home(request):
             'projects': put_in_json_format(get_user_projs(user), 'projects'),
             'affiliated_users': put_in_json_format(get_affiliated_users(user), 'users'),
         }
-
+        print(context)
         return render(request, 'accounts/user_home.html', context)
     else:
         return render(request, 'page_not_found.html')

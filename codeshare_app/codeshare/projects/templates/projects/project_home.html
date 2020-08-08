@@ -15,7 +15,9 @@ Codeshare Login
 {% block body %}
 
 
-{{ project_data|json_script:"proj-data" }}
+{{ breadcrumb|json_script:"breadcrumb" }}
+{{ proj_files|json_script:"proj-files" }}
+{{ contributers|json_script:"contr-data" }}
 
 
 <div class="full-page w-100 h-100">
@@ -30,8 +32,9 @@ Codeshare Login
     </main>
 </div>
 
+
+
 {% load static %}
-<!-- brings vue library into page-->
-<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
 <script src="{% static 'projects/scripts/project_home.js' %}"></script>
 {% endblock %}
