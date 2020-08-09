@@ -263,7 +263,12 @@ Vue.component('file-item', {
                             response.status);
                         return;
                     }
-
+                    console.log("RESPONSE:");
+                    console.log(response);
+                    //check for redirect response
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
                     //check response data
                     response.json().then(function (data) {
 

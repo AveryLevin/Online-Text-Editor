@@ -8,7 +8,7 @@ from accounts.views import get_user_or_None
 # Create your views here.
 
 
-def project_edit(request, proj_id):
+def project_edit(request, proj_id, file_id):
     context = {}
     return render(request, 'code_editor/project_edit.html', context)
 

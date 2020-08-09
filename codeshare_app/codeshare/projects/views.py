@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from accounts.views import get_user_or_None
 from .models import Project, ProjItem, FileItem
 from codeshare.utils import put_in_json_format
+from code_editor.views import project_edit
 
 import json
 
@@ -52,6 +53,9 @@ def project_home(request, proj_id):
 
             if action == 'open_file':
                 file_to_open = currently_open.contents.get(pk=file_id)
+                if not file_to_open.is_folder:
+                    print("opening file", file_to_open.name)
+                    return HttpResponseRedirect(reverse('code_editor:project_edit',kwargs={'proj_id': open_project.id, 'file_id': file_id}))
                 breadcrumb = prev_breadcrumb + put_in_json_format([file_to_open], 'breadcrumb')
             elif action == 'goto_breadcrumb':
                 file_to_open = open_project if data.get('this_breadcrumb').get('is_root') else ProjItem.objects.get(pk=file_id)
