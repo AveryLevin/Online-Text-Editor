@@ -43,11 +43,11 @@ class ProjItem(models.Model):
         Project, null=True, blank=True, on_delete=models.SET_NULL, related_name='contents')
     # RULE: folder_dir will be null unless root_proj is null
     folder_dir = models.ForeignKey(
-        'self', null=True, blank=True, on_delete=models.SET_NULL, related_name='folder_contents')
+        'self', null=True, blank=True, on_delete=models.SET_NULL, related_name='contents')
     is_folder = models.BooleanField()
     create_date = models.DateTimeField(auto_now_add=True)
     last_edit_date = models.DateTimeField(auto_now=True)
-    # folder_contents = one-to-many(ProjItem)
+    # contents (for folders) = one-to-many(ProjItem)
     # RULE: file_contents will be null unless is_folder is False
     file_contents = models.OneToOneField(
         FileItem, null=True, blank=True, on_delete=models.SET_NULL, related_name='container')

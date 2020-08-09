@@ -81,6 +81,24 @@ var sampleUserData = [
     },
 ];
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+console.log(csrftoken);
+
 var openBreadcrumb = JSON.parse(document.getElementById('breadcrumb').textContent);
 var projectContributers = JSON.parse(document.getElementById('contr-data').textContent);
 var projectFiles = JSON.parse(document.getElementById('proj-files').textContent);
@@ -134,7 +152,8 @@ Vue.component('file-item', {
             clicks: 0,
             time: null,
             selected: false,
-            img_url: "/static/projects/imgs/" + this.fileItem.fileType + ".png"
+            img_url: "/static/projects/imgs/" + this.fileItem.fileType + ".png",
+            postTo: window.location.href,
         }
     },
     template: `
@@ -172,8 +191,46 @@ Vue.component('file-item', {
                 this.selected = true;
             }
         },
-        openFileFolder: function() {
+        openFileFolder: function () {
             console.log("attempting to open " + this.fileItem.displayName)
+            console.log("Attempting POST Request to " + this.postTo);
+            
+            let postData = JSON.stringify({
+                action: "open_file",
+                prev_breadcrumb: app.breadcrumbData,
+                id: this.fileItem.id
+            });
+            var self = this;
+            fetch(this.postTo, {
+                method: 'post',
+                credentials: "same-origin",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: postData,
+
+            }).then(
+                function (response) {
+                    if (response.status != 200) {
+                        console.log('Looks like there was a problem. Status Code: ' +
+                            response.status);
+                        return;
+                    }
+
+                    //check response data
+                    response.json().then(function (data) {
+
+                        fileData = data;
+                        console.log("sending:");
+                        console.log(fileData);
+                        self.$emit('open-file-changed', fileData);
+                    });
+                }
+            ).catch(function (err) {
+                console.log('Fetch Error :-S', err);
+            });
         }
     }
 });
@@ -222,21 +279,29 @@ var app = new Vue({
     el: '.proj_home-root-vue',
     data: function () {
         return {
-            projHomeData: null
+            openBreadcrumb: openBreadcrumb,
+            projectContributers: projectContributers,
+            projectFiles: projectFiles,
         }
     },
     computed: {
         breadcrumbData: function () {
-            return openBreadcrumb;
-        },
-        projects: function () {
-            return sampleProjectData;
+            return this.openBreadcrumb;
         },
         contributers: function () {
-            return projectContributers;
+            return this.projectContributers;
         },
         fileData: function () {
-            return projectFiles;
+            return this.projectFiles;
+        }
+    },
+    methods: {
+        implementChanges: function(newFileData) {
+            console.log("updating with info: ");
+            console.log(newFileData)
+            this.openBreadcrumb = newFileData['breadcrumb'];
+            this.projectContributers = newFileData['contributers'];
+            this.projectFiles = newFileData['proj_files'];
         }
     },
     template: `
@@ -290,7 +355,8 @@ var app = new Vue({
 
                             <file-item
                             v-for="file in fileData"
-                            v-bind:file-item="file"></file-item>
+                            v-bind:file-item="file"
+                            v-on:open-file-changed="implementChanges"></file-item>
 
                         </div>
                     </div>

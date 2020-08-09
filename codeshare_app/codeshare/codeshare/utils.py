@@ -1,5 +1,5 @@
 from accounts.models import User, UserAccount
-from projects.models import Project
+from projects.models import Project, ProjItem, FileItem
 from code_editor.models import ProgrammingLanguage
 
 
@@ -70,9 +70,11 @@ def put_in_json_format(objs, item_type):
     elif item_type == 'files':
         for file in objs:
             if not file.soft_deleted:
+                print(file.name)
                 json.append(
                     {
                         'displayName': get_full_filename(file),
+                        'id': file.id,
                         'edited': format_months(file.last_edit_date.strftime("%m")) + file.last_edit_date.strftime(" %d, %Y"),
                         'created': format_months(file.create_date.strftime("%m")) + file.create_date.strftime(" %d, %Y"),
                         'fileType': get_file_type(file),
@@ -80,10 +82,11 @@ def put_in_json_format(objs, item_type):
                 )
     elif item_type == 'breadcrumb':
         if len(objs) == 1: 
+            crumb = objs[0] 
             json.append(
                 {
-                    'displayName': objs[0].name,
-                    'rederName': '',
+                    'displayName': crumb.name if (type(crumb) == Project or crumb.is_folder) else get_full_filename(crumb),
+                    'id': crumb.id,
                 }
             )
 
