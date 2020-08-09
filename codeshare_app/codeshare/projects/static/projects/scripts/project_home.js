@@ -120,6 +120,7 @@ Vue.component('breadcrumb-item', {
     template: `
         <li 
         v-if="!active"
+        @click="goTo"
         class="breadcrumb-item">
             <a href="#">
                 [[ breadcrumb.displayName ]]
@@ -136,7 +137,48 @@ Vue.component('breadcrumb-item', {
 
     },
     methods: {
+        goTo: function () {
+            console.log("attempting to open breadcrumb " + this.breadcrumb.displayName)
+            console.log("Attempting POST Request to " + this.postTo);
+            
+            let postData = JSON.stringify({
+                action: "goto_breadcrumb",
+                prev_breadcrumb: app.breadcrumbData,
+                id: this.breadcrumb.id,
+                this_breadcrumb: this.breadcrumb,
+            });
+            var self = this;
+            fetch(app.postTo, {
+                method: 'post',
+                credentials: "same-origin",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: postData,
 
+            }).then(
+                function (response) {
+                    if (response.status != 200) {
+                        console.log('Looks like there was a problem. Status Code: ' +
+                            response.status);
+                        return;
+                    }
+
+                    //check response data
+                    response.json().then(function (data) {
+
+                        fileData = data;
+                        console.log("recieved:");
+                        console.log(fileData);
+                        self.$emit('open-file-changed', fileData);
+                    });
+                }
+            ).catch(function (err) {
+                console.log('Fetch Error :-S', err);
+            });
+        }
     }
 });
 
@@ -152,7 +194,6 @@ Vue.component('file-item', {
             clicks: 0,
             time: null,
             selected: false,
-            postTo: window.location.href,
         }
     },
     computed: {
@@ -205,7 +246,7 @@ Vue.component('file-item', {
                 id: this.fileItem.id
             });
             var self = this;
-            fetch(this.postTo, {
+            fetch(app.postTo, {
                 method: 'post',
                 credentials: "same-origin",
                 headers: {
@@ -227,7 +268,7 @@ Vue.component('file-item', {
                     response.json().then(function (data) {
 
                         fileData = data;
-                        console.log("sending:");
+                        console.log("received:");
                         console.log(fileData);
                         self.$emit('open-file-changed', fileData);
                     });
@@ -286,6 +327,7 @@ var app = new Vue({
             openBreadcrumb: openBreadcrumb,
             projectContributers: projectContributers,
             projectFiles: projectFiles,
+            postTo: window.location.href,
         }
     },
     computed: {
@@ -317,6 +359,7 @@ var app = new Vue({
                         <breadcrumb-item
                         v-for="(breadcrumb, index) in this.breadcrumbData"
                         v-bind:breadcrumb="breadcrumb"
+                        v-on:open-file-changed="implementChanges"
                         v-bind:active="index == breadcrumbData.length - 1"></breadcrumb-item>
                     </ol>
                 </nav>

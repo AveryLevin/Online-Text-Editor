@@ -87,6 +87,7 @@ def put_in_json_format(objs, item_type):
                 {
                     'displayName': crumb.name if (type(crumb) == Project or crumb.is_folder) else get_full_filename(crumb),
                     'id': crumb.id,
+                    'is_root': type(objs[0]) == Project,
                 }
             )
 

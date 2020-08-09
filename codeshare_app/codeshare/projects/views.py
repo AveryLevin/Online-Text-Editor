@@ -29,6 +29,8 @@ def load_project_home_json(breadcrumb, currently_open, open_project):
         'contributers': put_in_json_format(get_contributers(open_project), 'users'),
     }
 
+def get_item_proj(item):
+    pass
 # === VIEWS ===
 
 def project_home(request, proj_id):
@@ -46,13 +48,18 @@ def project_home(request, proj_id):
             action = data.get('action')
             file_id = data.get('id')          
             prev_breadcrumb = data.get('prev_breadcrumb')
-            currently_open = open_project if len(prev_breadcrumb) == 1 else ProjItem.get(pk=prev_breadcrumb[-1].id)
+            currently_open = open_project if len(prev_breadcrumb) == 1 else ProjItem.objects.get(pk=prev_breadcrumb[-1].get('id'))
 
             if action == 'open_file':
                 file_to_open = currently_open.contents.get(pk=file_id)
-                print("opening:", file_to_open)
                 breadcrumb = prev_breadcrumb + put_in_json_format([file_to_open], 'breadcrumb')
-                currently_open = file_to_open
+            elif action == 'goto_breadcrumb':
+                file_to_open = open_project if data.get('this_breadcrumb').get('is_root') else ProjItem.objects.get(pk=file_id)
+                # TODO: check that ProjItem is in same project as currently_open
+                breadcrumb  = prev_breadcrumb[:1+prev_breadcrumb.index(data.get('this_breadcrumb'))]
+
+            print("opening:", file_to_open)
+            currently_open = file_to_open
             return JsonResponse(data=load_project_home_json(breadcrumb, currently_open, open_project))
     else:
         currently_open = open_project
