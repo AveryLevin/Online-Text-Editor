@@ -152,9 +152,11 @@ Vue.component('file-item', {
             clicks: 0,
             time: null,
             selected: false,
-            img_url: "/static/projects/imgs/" + this.fileItem.fileType + ".png",
             postTo: window.location.href,
         }
+    },
+    computed: {
+
     },
     template: `
     <div class="file-item"
@@ -167,7 +169,9 @@ Vue.component('file-item', {
     </div>
     `,
     computed: {
-
+        img_url: function() {
+            return "/static/projects/imgs/" + this.fileItem.fileType + ".png"
+        }
     },
     methods: {
         handleClicks: function () {
