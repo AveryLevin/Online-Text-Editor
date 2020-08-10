@@ -98,9 +98,26 @@ var sampleUserData = [
     },
 ]
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 var openBreadcrumb = JSON.parse(document.getElementById('breadcrumb').textContent);
 var projectFiles = JSON.parse(document.getElementById('proj-files').textContent);
-console.log(projectFiles);
+var fileContent = JSON.parse(document.getElementById('file-content').textContent);
+console.log(fileContent);
 
 Vue.component('breadcrumb-item', {
     delimiters: ['[[', ']]'],
@@ -177,13 +194,14 @@ var app = new Vue({
     el: '.proj_home-root-vue',
     data: {
         activeFile: "main.py",
+        postTo: window.location.href,
     },
     computed: {
         breadcrumbData: function () {
             return  openBreadcrumb;
         },
-        projects: function () {
-            return sampleProjectData;
+        fileContent: function () {
+            return fileContent;
         },
         contributers: function () {
             return sampleUserData;
@@ -204,6 +222,47 @@ var app = new Vue({
         img_url: function() {
             return "/static/projects/imgs/" + this.openFile.fileType + ".png";
         }
+    },
+    methods: {
+        saveFile: function() {
+            var updatedCode = editor.getValue();
+
+            let postData = JSON.stringify({
+                action: "save_file",
+                new_content: updatedCode,
+            });
+            var self = this;
+            fetch(app.postTo, {
+                method: 'post',
+                credentials: "same-origin",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: postData,
+
+            }).then(
+                function (response) {
+                    if (response.status != 200) {
+                        console.log('Looks like there was a problem. Status Code: ' +
+                            response.status);
+                        return;
+                    }
+
+                    //check response data
+                    response.json().then(function (data) {
+                        // checks whether successfully saved
+                        saveStatus = data;
+                        console.log("saving:");
+                        console.log(saveStatus.save_status);
+                        // TODO: create toast for successful save
+                    });
+                }
+            ).catch(function (err) {
+                console.log('Fetch Error :-S', err);
+            });
+        },
     },
     template: `
     <div class="container-fluid" style="height: 100%;">
@@ -256,7 +315,8 @@ var app = new Vue({
                                 <div class="open-file-name">
                                 <img :src="this.img_url" alt="" style="width: 32px; height: 32px;">
                                 [[this.openFile.displayName]]</div>
-                                <button class="save-btn my-2 justify-content-end btn btn-light">Save</button>
+                                <button class="save-btn my-2 justify-content-end btn btn-light"
+                                @click="this.saveFile">Save</button>
                                 <div class=""></div>
                             </div>
                             <div class="editor-wraper">
@@ -273,7 +333,7 @@ var app = new Vue({
 });
 
 function createEditor(language, highlighting) {
-    var starter = supportedLangs[language];
+    var starter = app.fileContent;
     if (starter != null) {
         document.getElementById('editor').value = starter;
     }

@@ -7,6 +7,8 @@ from accounts.views import get_user_or_None
 from projects.models import Project, ProjItem, FileItem
 from codeshare.utils import get_full_filename, get_files_in_proj_or_folder, put_in_json_format
 
+import json
+
 # === UTILITIES === 
 
 def get_breadcrumb_from_file(crumb):
@@ -29,13 +31,31 @@ def get_breadcrumb_from_file(crumb):
 # === VIEWS ===
 
 def project_edit(request, proj_id, file_id):
+    
     open_file = ProjItem.objects.get(pk=file_id)
+
+    if request.method == 'POST':
+        data = request.body
+        if data:
+            data = json.loads(data)
+            action = data.get('action')
+            
+            if action == 'save_file':
+                updated_code = data.get('new_content')
+                open_file.file_contents.contents = updated_code
+                open_file.file_contents.save()
+                return JsonResponse({
+                    'save_status': True,
+                })
+
+
     breadcrumb = get_breadcrumb_from_file(open_file)
     in_folder = open_file.folder_dir if open_file.folder_dir else open_file.root_proj
     files = put_in_json_format(get_files_in_proj_or_folder(in_folder), 'files', active_file=open_file.id)
     context = {
         'breadcrumb': breadcrumb,
         'proj_files': files,
+        'file_content': open_file.file_contents.contents,
     }
     return render(request, 'code_editor/project_edit.html', context)
 
