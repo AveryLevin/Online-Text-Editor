@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from accounts.views import get_user_or_None
 from .models import Project, ProjItem, FileItem
-from codeshare.utils import put_in_json_format
+from codeshare.utils import put_in_json_format, get_files_in_proj_or_folder
 from code_editor.views import project_edit
 
 import json
@@ -15,12 +15,6 @@ import json
 def get_contributers(proj):
     """Returns all UserAccounts with access to given 'proj'."""
     return proj.accessors.all()
-
-def get_files_in_proj_or_folder(item):
-    """Returns all files in given 'proj'."""
-    all_files = item.contents.all()
-    print(all_files)
-    return(all_files)
 
 def load_project_home_json(breadcrumb, currently_open, open_project):
     """Returns a loaded JSON based off the current state of the page."""
@@ -32,6 +26,7 @@ def load_project_home_json(breadcrumb, currently_open, open_project):
 
 def get_item_proj(item):
     pass
+
 # === VIEWS ===
 
 def project_home(request, proj_id):

@@ -40,7 +40,13 @@ def get_full_filename(proj_item):
         name += file_item.file_extension
     return name
 
-def put_in_json_format(objs, item_type):
+def get_files_in_proj_or_folder(item):
+    """Returns all files in given 'proj'."""
+    all_files = item.contents.all()
+    print(all_files)
+    return(all_files)
+
+def put_in_json_format(objs, item_type, active_file=None):
     """Rewrites given object in a json-acceptable format (list, dict, etc). 
     The piece of data being input must be indicated using the 'item_type' parameter.
     \nValid item_types are:\n
@@ -70,6 +76,9 @@ def put_in_json_format(objs, item_type):
     elif item_type == 'files':
         for file in objs:
             if not file.soft_deleted:
+                active = False
+                if active_file and active_file == file.id:
+                    active = True
                 print(file.name)
                 json.append(
                     {
@@ -78,6 +87,7 @@ def put_in_json_format(objs, item_type):
                         'edited': format_months(file.last_edit_date.strftime("%m")) + file.last_edit_date.strftime(" %d, %Y"),
                         'created': format_months(file.create_date.strftime("%m")) + file.create_date.strftime(" %d, %Y"),
                         'fileType': get_file_type(file),
+                        'active': active,
                     }
                 )
     elif item_type == 'breadcrumb':
