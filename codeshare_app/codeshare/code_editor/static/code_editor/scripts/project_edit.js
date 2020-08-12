@@ -133,7 +133,8 @@ Vue.component('breadcrumb-item', {
     template: `
         <li 
         v-if="!active"
-        class="breadcrumb-item">
+        class="breadcrumb-item"
+        @click="goTo">
             <a href="#">
                 [[ breadcrumb.displayName ]]
             </a>
@@ -149,7 +150,53 @@ Vue.component('breadcrumb-item', {
 
     },
     methods: {
+        goTo: function () {
+            console.log("attempting to open breadcrumb " + this.breadcrumb.displayName)
+            console.log("Attempting POST Request to " + this.postTo);
 
+            let postData = JSON.stringify({
+                action: "goto_breadcrumb",
+                prev_breadcrumb: app.breadcrumbData,
+                id: this.breadcrumb.id,
+                this_breadcrumb: this.breadcrumb,
+            });
+            var self = this;
+            fetch(app.postTo, {
+                method: 'post',
+                credentials: "same-origin",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: postData,
+
+            }).then(
+                function (response) {
+                    if (response.status != 200) {
+                        console.log('Looks like there was a problem. Status Code: ' +
+                            response.status);
+                        return;
+                    }
+
+                    //check for redirect response
+                    if (response.redirected) {
+                        // if redirected, a folder was selected, goTo projectHome page
+                        window.location.href = response.url;
+                    }
+                    //check response data
+                    response.json().then(function (data) {
+
+                        fileData = data;
+                        console.log("received:");
+                        console.log(fileData);
+                        self.$emit('open-file-changed', fileData);
+                    });
+                }
+            ).catch(function (err) {
+                console.log('Fetch Error :-S', err);
+            });
+        }
     }
 });
 
@@ -198,7 +245,7 @@ var app = new Vue({
     },
     computed: {
         breadcrumbData: function () {
-            return  openBreadcrumb;
+            return openBreadcrumb;
         },
         fileContent: function () {
             return fileContent;
@@ -209,7 +256,7 @@ var app = new Vue({
         fileData: function () {
             return projectFiles;
         },
-        openFile: function() {
+        openFile: function () {
             var rVal = null;
             this.fileData.forEach(file => {
                 if (file.active) {
@@ -218,13 +265,13 @@ var app = new Vue({
                 }
             });
             return rVal;
-        },        
-        img_url: function() {
+        },
+        img_url: function () {
             return "/static/projects/imgs/" + this.openFile.fileType + ".png";
         }
     },
     methods: {
-        saveFile: function() {
+        saveFile: function () {
             var updatedCode = editor.getValue();
 
             let postData = JSON.stringify({
@@ -326,6 +373,21 @@ var app = new Vue({
                     </div>
                 </div>
             </div>
+            <!--
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="position: absolute; top: 0; right: 0;">
+                <div class="toast-header">
+                    <img src="..." class="rounded mr-2" alt="...">
+                    <strong class="mr-auto">Bootstrap</strong>
+                    <small>11 mins ago</small>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    Hello, world! This is a toast message.
+                </div>
+            </div>
+            -->
         </div>
     </div>
     </div>

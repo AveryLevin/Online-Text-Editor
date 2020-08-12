@@ -5,24 +5,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from accounts.views import get_user_or_None
 from .models import Project, ProjItem, FileItem
-from codeshare.utils import put_in_json_format, get_files_in_proj_or_folder
+from codeshare.utils import put_in_json_format, get_files_in_proj_or_folder, load_project_home_json
 from code_editor.views import project_edit
 
 import json
 
 # === UTILITIES ===
 
-def get_contributers(proj):
-    """Returns all UserAccounts with access to given 'proj'."""
-    return proj.accessors.all()
-
-def load_project_home_json(breadcrumb, currently_open, open_project):
-    """Returns a loaded JSON based off the current state of the page."""
-    return {
-        'breadcrumb': breadcrumb,
-        'proj_files': put_in_json_format(get_files_in_proj_or_folder(currently_open), 'files'),
-        'contributers': put_in_json_format(get_contributers(open_project), 'users'),
-    }
 
 def get_item_proj(item):
     pass
@@ -59,9 +48,17 @@ def project_home(request, proj_id):
 
             print("opening:", file_to_open)
             currently_open = file_to_open
-            return JsonResponse(data=load_project_home_json(breadcrumb, currently_open, open_project))
+
+            request.session['file_context'] = load_project_home_json(breadcrumb, currently_open, open_project)
+            
+            return JsonResponse(data=request.session.get('file_context'))
     else:
         currently_open = open_project
         breadcrumb = put_in_json_format([currently_open], 'breadcrumb')
 
-    return render(request, 'projects/project_home.html', load_project_home_json(breadcrumb, currently_open, open_project))
+        data = load_project_home_json(breadcrumb, currently_open, open_project)
+        if 'file_context' in request.session:
+            print("file context already provided")
+            data = request.session.get('file_context')
+
+    return render(request, 'projects/project_home.html', data)

@@ -43,7 +43,6 @@ def get_full_filename(proj_item):
 def get_files_in_proj_or_folder(item):
     """Returns all files in given 'proj'."""
     all_files = item.contents.all()
-    print(all_files)
     return(all_files)
 
 def put_in_json_format(objs, item_type, active_file=None):
@@ -79,7 +78,6 @@ def put_in_json_format(objs, item_type, active_file=None):
                 active = False
                 if active_file and active_file == file.id:
                     active = True
-                print(file.name)
                 json.append(
                     {
                         'displayName': get_full_filename(file),
@@ -102,3 +100,15 @@ def put_in_json_format(objs, item_type, active_file=None):
             )
 
     return json
+
+def get_contributers(proj):
+    """Returns all UserAccounts with access to given 'proj'."""
+    return proj.accessors.all()
+
+def load_project_home_json(breadcrumb, currently_open, open_project):
+    """Returns a loaded JSON based off the current state of the page."""
+    return {
+        'breadcrumb': breadcrumb,
+        'proj_files': put_in_json_format(get_files_in_proj_or_folder(currently_open), 'files'),
+        'contributers': put_in_json_format(get_contributers(open_project), 'users'),
+    }

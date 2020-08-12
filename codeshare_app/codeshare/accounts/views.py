@@ -53,7 +53,9 @@ def user_home(request):
             'projects': put_in_json_format(get_user_projs(user), 'projects'),
             'affiliated_users': put_in_json_format(get_affiliated_users(user), 'users'),
         }
-        print(context)
+        if 'file_context' in request.session:
+            del request.session['file_context']
+            print("deleted current project session")
         return render(request, 'accounts/user_home.html', context)
     else:
         return render(request, 'page_not_found.html')
