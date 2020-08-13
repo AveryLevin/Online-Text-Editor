@@ -52,6 +52,7 @@ def project_edit(request, proj_id, file_id):
                 return JsonResponse({
                     'save_status': True,
                 })
+                # END POST
             elif action == 'goto_breadcrumb':
                 file_to_open = open_project if data.get('this_breadcrumb').get(
                     'is_root') else ProjItem.objects.get(pk=data.get('id'))
@@ -64,6 +65,7 @@ def project_edit(request, proj_id, file_id):
                 request.session['file_context'] = load_project_home_json(
                     breadcrumb, file_to_open, open_project)
                 return HttpResponseRedirect(reverse('projects:project_home', kwargs={'proj_id': proj_id}))
+                # END POST
             elif action == 'open_file':
                 prev_breadcrumb = data.get('prev_breadcrumb')
                 currently_open = open_project if len(prev_breadcrumb) == 2 else ProjItem.objects.get(pk=prev_breadcrumb[-2].get('id'))
@@ -74,6 +76,22 @@ def project_edit(request, proj_id, file_id):
                     request.session['file_context'] = load_project_home_json(
                         breadcrumb, file_to_open, open_project)
                     return HttpResponseRedirect(reverse('projects:project_home',kwargs={'proj_id': proj_id}))
+                    # END POST
+                else:
+                    print("opening file:", file_to_open.name)
+                    open_file = file_to_open
+                    
+                    breadcrumb = get_breadcrumb_from_file(open_file)
+                    in_folder = open_file.folder_dir if open_file.folder_dir else open_file.root_proj
+                    files = put_in_json_format(get_files_in_proj_or_folder(
+                        in_folder), 'files', active_file=open_file.id)
+                    context = {
+                        'breadcrumb': breadcrumb,
+                        'proj_files': files,
+                        'file_content': open_file.file_contents.contents,
+                    }
+                    return JsonResponse(context)
+                    # END POST
     breadcrumb = get_breadcrumb_from_file(open_file)
     in_folder = open_file.folder_dir if open_file.folder_dir else open_file.root_proj
     files = put_in_json_format(get_files_in_proj_or_folder(

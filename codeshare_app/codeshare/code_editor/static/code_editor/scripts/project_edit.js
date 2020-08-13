@@ -304,21 +304,20 @@ var app = new Vue({
     delimiters: ['[[', ']]'],
     el: '.proj_home-root-vue',
     data: {
-        activeFile: "main.py",
+        openBreadcrumb: openBreadcrumb,
+        fileContent: fileContent,
+        projectFiles: projectFiles,
         postTo: window.location.href,
     },
     computed: {
         breadcrumbData: function () {
-            return openBreadcrumb;
+            return this.openBreadcrumb;
         },
         fileContent: function () {
-            return fileContent;
-        },
-        contributers: function () {
-            return sampleUserData;
+            return this.fileContent;
         },
         fileData: function () {
-            return projectFiles;
+            return this.projectFiles;
         },
         openFile: function () {
             var rVal = null;
@@ -374,6 +373,19 @@ var app = new Vue({
                 console.log('Fetch Error :-S', err);
             });
         },
+        implementChanges: function (newFileData) {
+            console.log("updating with info: ");
+            console.log(newFileData)
+            this.openBreadcrumb = newFileData['breadcrumb'];
+            this.fileContent = newFileData['file_content'];
+            this.projectFiles = newFileData['proj_files'];
+            this.refreshCodeMirror();
+        },
+        refreshCodeMirror: function() {
+            console.log("attempting to refresh editor");
+            console.log(this.fileContent);
+            editor.getDoc().setValue(this.fileContent);
+        },
     },
     template: `
     <div class="container-fluid" style="height: 100%;">
@@ -417,7 +429,8 @@ var app = new Vue({
                         <div class="file-explorer"> 
                             <file-item
                             v-for="file in fileData"
-                            v-bind:file-item="file"></file-item>
+                            v-bind:file-item="file"
+                            v-on:open-file-changed="implementChanges"></file-item>
                         </div>
                     </div>
                     <div class="code-panel proj-container col-11">
