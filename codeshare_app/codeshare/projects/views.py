@@ -19,7 +19,7 @@ def get_item_proj(item):
 # === VIEWS ===
 
 def project_home(request, proj_id):
-    
+    # TODO: require a login and check user permissions
     try:
         open_project = Project.objects.get(pk=proj_id)
         

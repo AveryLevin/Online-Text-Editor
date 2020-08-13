@@ -14,7 +14,7 @@ class Project(models.Model):
     # accessor_permissions =
     start_date = models.DateTimeField(auto_now_add=True, editable=False)
     modified_date = models.DateTimeField(auto_now=True)
-    soft_deleted = models.BooleanField()
+    soft_deleted = models.BooleanField(default=False)
     # contents = one-to-many(ProjItem)
 
     def __str__(self):

@@ -7,9 +7,11 @@ from .models import User, UserAccount
 from .forms import UserForm, UserAccountForm
 from projects.models import Project
 from codeshare.utils import put_in_json_format
-# Create your views here.
+
+import json
 
 # === UTILITIES ===
+
 
 def get_user_or_None(request):
     if request.user.is_authenticated and request.user.is_active:
@@ -25,38 +27,55 @@ def get_user_projs(user):
             projs.append(proj)
     return projs
 
+
 def get_contributers(proj):
     return proj.accessors.all()
+
 
 def get_affiliated_users(user):
     affiliated_users = []
     for proj in get_user_projs(user):
         affiliated_users.extend(get_contributers(proj))
-    
+
     r_val = []
-    
+
     for user in affiliated_users:
         if user not in r_val:
             r_val.append(user)
     return r_val
 
 # === VIEWS ===
+
+
 @login_required()
 def user_home(request):
 
     user = get_user_or_None(request)
 
     if user:
-        context = {
-            'logged_in': True,
-            'user': user,
-            'projects': put_in_json_format(get_user_projs(user), 'projects'),
-            'affiliated_users': put_in_json_format(get_affiliated_users(user), 'users'),
-        }
-        if 'file_context' in request.session:
-            del request.session['file_context']
-            print("deleted current project session")
-        return render(request, 'accounts/user_home.html', context)
+
+        if request.method == 'POST':
+            data = request.body
+            if data:
+                data = json.loads(data)
+                action = data.get('action')
+                if action == 'create_proj':
+                    proj_name = data.get('name')
+                    new_proj = Project(name=proj_name, owner=user)
+                    new_proj.save()
+                    proj_id = new_proj.id
+                    return HttpResponseRedirect(reverse('projects:project_home', kwargs={'proj_id': proj_id}))
+        else:
+            context = {
+                'logged_in': True,
+                'user': user,
+                'projects': put_in_json_format(get_user_projs(user), 'projects'),
+                'affiliated_users': put_in_json_format(get_affiliated_users(user), 'users'),
+            }
+            if 'file_context' in request.session:
+                del request.session['file_context']
+                print("deleted current project session")
+            return render(request, 'accounts/user_home.html', context)
     else:
         return render(request, 'page_not_found.html')
 
@@ -117,7 +136,7 @@ def user_create(request):
             # read raw data from forms
             user_form = UserForm(data=request.POST)
             profile_form = UserProfileForm(data=request.POST)
-            
+
         context = {
             'logged_in': False,
             'user': user
