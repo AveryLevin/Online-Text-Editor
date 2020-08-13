@@ -207,6 +207,10 @@ Vue.component('file-item', {
     },
     data: function () {
         return {
+            result: [],
+            delay: 200,
+            clicks: 0,
+            time: null,
             selected: false,
             img_url: "/static/projects/imgs/" + this.fileItem.fileType + ".png"
         }
@@ -215,7 +219,7 @@ Vue.component('file-item', {
     <div class="file-item"
     v-bind:class="{select : selected,
         activefile : this.fileItem.active}"
-    @click="toggleSelect">
+    @click="handleClicks">
         <img :src="this.img_url" alt="" style="width: 32px; height: 32px;">
         <div class="name-list">
             <div class="name2">[[ fileItem.displayName ]]</div>
@@ -226,6 +230,20 @@ Vue.component('file-item', {
 
     },
     methods: {
+        handleClicks: function () {
+            this.clicks++;
+            if (this.clicks === 1) {
+                var self = this;
+                this.timer = setTimeout(function () {
+                    self.clicks = 0;
+                    self.toggleSelect();
+                }, this.delay)
+            } else {
+                clearTimeout(this.timer);
+                this.clicks = 0;
+                this.openFileFolder();
+            }
+        },
         toggleSelect: function () {
             if (this.selected) {
                 this.selected = false;
@@ -233,6 +251,52 @@ Vue.component('file-item', {
                 this.selected = true;
             }
         },
+        openFileFolder: function () {
+            console.log("attempting to open " + this.fileItem.displayName)
+            console.log("Attempting POST Request to " + this.postTo);
+
+            let postData = JSON.stringify({
+                action: "open_file",
+                prev_breadcrumb: app.breadcrumbData,
+                id: this.fileItem.id
+            });
+            var self = this;
+            fetch(app.postTo, {
+                method: 'post',
+                credentials: "same-origin",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: postData,
+
+            }).then(
+                function (response) {
+                    if (response.status != 200) {
+                        console.log('Looks like there was a problem. Status Code: ' +
+                            response.status);
+                        return;
+                    }
+                    console.log("RESPONSE:");
+                    console.log(response);
+                    //check for redirect response
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+                    //check response data
+                    response.json().then(function (data) {
+
+                        fileData = data;
+                        console.log("received:");
+                        console.log(fileData);
+                        self.$emit('open-file-changed', fileData);
+                    });
+                }
+            ).catch(function (err) {
+                console.log('Fetch Error :-S', err);
+            });
+        }
     }
 });
 

@@ -64,7 +64,16 @@ def project_edit(request, proj_id, file_id):
                 request.session['file_context'] = load_project_home_json(
                     breadcrumb, file_to_open, open_project)
                 return HttpResponseRedirect(reverse('projects:project_home', kwargs={'proj_id': proj_id}))
-
+            elif action == 'open_file':
+                prev_breadcrumb = data.get('prev_breadcrumb')
+                currently_open = open_project if len(prev_breadcrumb) == 2 else ProjItem.objects.get(pk=prev_breadcrumb[-2].get('id'))
+                file_to_open = currently_open.contents.get(pk=data.get('id'))
+                breadcrumb = prev_breadcrumb[:-1] + put_in_json_format([file_to_open], 'breadcrumb')
+                if file_to_open.is_folder:
+                    print("opening folder", file_to_open.name)
+                    request.session['file_context'] = load_project_home_json(
+                        breadcrumb, file_to_open, open_project)
+                    return HttpResponseRedirect(reverse('projects:project_home',kwargs={'proj_id': proj_id}))
     breadcrumb = get_breadcrumb_from_file(open_file)
     in_folder = open_file.folder_dir if open_file.folder_dir else open_file.root_proj
     files = put_in_json_format(get_files_in_proj_or_folder(
