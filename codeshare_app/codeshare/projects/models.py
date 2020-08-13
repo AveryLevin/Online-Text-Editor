@@ -37,7 +37,7 @@ class FileItem(models.Model):
 
 class ProjItem(models.Model):
     name = models.CharField(max_length=50)
-    soft_deleted = models.BooleanField()
+    soft_deleted = models.BooleanField(default=False)
     # RULE: root_proj will be null unless it is in the root dir of that project
     root_proj = models.ForeignKey(
         Project, null=True, blank=True, on_delete=models.SET_NULL, related_name='contents')

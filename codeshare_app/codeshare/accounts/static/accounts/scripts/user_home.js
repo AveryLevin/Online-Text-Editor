@@ -174,6 +174,19 @@ var app = new Vue({
         createProject: function () {
             var projectName = document.getElementById('enter-proj-name').value;
 
+            if (projectName == 'Enter name' || projectName == '') {
+                console.log("invalid name")
+                this.modalData.body = `
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    Please give the project a name.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                ` + this.modalData.body;
+                return;
+            }
+
             console.log("craeating project: " + projectName);
 
             let postData = JSON.stringify({
@@ -208,6 +221,7 @@ var app = new Vue({
             ).catch(function (err) {
                 console.log('Fetch Error :-S', err);
             });
+
         },
         openCreateProjectDialog: function () {
             this.createDialog({

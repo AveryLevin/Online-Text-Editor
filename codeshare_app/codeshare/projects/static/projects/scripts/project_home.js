@@ -140,7 +140,7 @@ Vue.component('breadcrumb-item', {
         goTo: function () {
             console.log("attempting to open breadcrumb " + this.breadcrumb.displayName)
             console.log("Attempting POST Request to " + this.postTo);
-            
+
             let postData = JSON.stringify({
                 action: "goto_breadcrumb",
                 prev_breadcrumb: app.breadcrumbData,
@@ -210,7 +210,7 @@ Vue.component('file-item', {
     </div>
     `,
     computed: {
-        img_url: function() {
+        img_url: function () {
             return "/static/projects/imgs/" + this.fileItem.fileType + ".png"
         }
     },
@@ -239,7 +239,7 @@ Vue.component('file-item', {
         openFileFolder: function () {
             console.log("attempting to open " + this.fileItem.displayName)
             console.log("Attempting POST Request to " + this.postTo);
-            
+
             let postData = JSON.stringify({
                 action: "open_file",
                 prev_breadcrumb: app.breadcrumbData,
@@ -333,6 +333,11 @@ var app = new Vue({
             projectContributers: projectContributers,
             projectFiles: projectFiles,
             postTo: window.location.href,
+            modalData: {
+                header: "",
+                body: "",
+                footer: "",
+            },
         }
     },
     computed: {
@@ -347,17 +352,153 @@ var app = new Vue({
         }
     },
     methods: {
-        implementChanges: function(newFileData) {
+        implementChanges: function (newFileData) {
             console.log("updating with info: ");
             console.log(newFileData)
             this.openBreadcrumb = newFileData['breadcrumb'];
             this.projectContributers = newFileData['contributers'];
             this.projectFiles = newFileData['proj_files'];
-        }
+        },
+        createFolder: function () {
+            var folderName = document.getElementById('enter-folder-name').value;
+
+            if (folderName == 'Enter name' || folderName == '') {
+                console.log("invalid name")
+                this.modalData.body = `
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    Please give the folder a name.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                ` + this.modalData.body;
+                return;
+            }
+
+            console.log("craeating project: " + folderName);
+
+            let postData = JSON.stringify({
+                action: "create_folder",
+                name: folderName,
+                prev_breadcrumb: this.openBreadcrumb,
+            });
+            var self = this;
+            fetch(app.postTo, {
+                method: 'post',
+                credentials: "same-origin",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: postData,
+
+            }).then(
+                function (response) {
+                    if (response.status != 200) {
+                        console.log('Looks like there was a problem. Status Code: ' +
+                            response.status);
+                        return;
+                    }
+
+                    //check for redirect response 
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+
+                    //check response data
+                    response.json().then(function (data) {
+
+                        fileData = data;
+                        console.log("received:");
+                        console.log(fileData);
+                        self.implementChanges(fileData);
+                        $('#universalModal').modal('toggle');
+                    });
+                }
+            ).catch(function (err) {
+                console.log('Fetch Error :-S', err);
+            });
+        },
+        createFolderDialog: function () {
+            this.createDialog({
+                header: "Create New Folder",
+                body: `
+                <div class="form-group>
+                    <label for="enter-folder-name">
+                        Folder Name:
+                    </label>
+                    <input 
+                    class="form-control" 
+                    id="enter-folder-name"
+                    placeholder="Enter name">
+                </div>
+                `,
+                footer: `
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary"
+                id="create-button-fold">Create</button>
+                `,
+            });
+        },
+        createFileDialog: function () {
+
+        },
+        createDialog: function (dialogContent) {
+            // check if dictionary provided
+            try {
+                this.modalData.header = dialogContent.header;
+                this.modalData.body = dialogContent.body;
+                this.modalData.footer = dialogContent.footer;
+                console.log("creating modal");
+                $('#universalModal').modal('toggle');
+            } catch (error) {
+                console.log("DIALOG ERROR: wrong content type provided");
+                console.log(error);
+            }
+
+        },
+        handleModalClick: function (e) {
+            // this was a pretty neat trick to be able to check when 'create' button is pressed
+            /**
+             * Since the modal is being loaded dynamically using Vue's v-html, Vue won't parse
+             * the html and see an '@click handler. Therefor, I put the handler on the entire
+             * div where content is being inserted and use this method to check the element 
+             * target matches the 'create' button
+             */
+            if (e.target.matches('#create-button-fold')) {
+                this.createFolder();
+            }
+        },
     },
     template: `
     <div class="container-fluid" style="height: 100%;">
         <div class="row" style="height: 100%;">
+            <div class="modal fade" 
+            id="universalModal" 
+            tabindex="-1" 
+            role="dialog" 
+            aria-labelledby="exampleModalCenterTitle" 
+            aria-hidden="true"
+            data-backdrop="false">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">[[ this.modalData.header ]]</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                            <div class="modal-body"
+                            v-html="this.modalData.body">
+                            </div>
+                        <div class="modal-footer"
+                        v-html="this.modalData.footer"                        
+                        @click="handleModalClick">
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="proj_main-container proj-container container">
                 <nav aria-label="breadcrumb" class="breadcrumb-header">
                     <ol class="breadcrumb breadcrumb-list">
@@ -382,7 +523,8 @@ var app = new Vue({
                                     <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
                                 </svg>
                             </div>
-                            <div class="control-icon">
+                            <div class="control-icon"
+                            @click="createFolderDialog">
                                 <!-- TODO: add @click event-->
                                 <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-folder-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" d="M9.828 4H2.19a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91H9v1H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181L15.546 8H14.54l.265-2.91A1 1 0 0 0 13.81 4H9.828zm-2.95-1.707L7.587 3H2.19c-.24 0-.47.042-.684.12L1.5 2.98a1 1 0 0 1 1-.98h3.672a1 1 0 0 1 .707.293z"/>
