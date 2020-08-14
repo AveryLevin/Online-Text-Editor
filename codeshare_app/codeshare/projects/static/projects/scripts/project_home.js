@@ -232,8 +232,12 @@ Vue.component('file-item', {
         toggleSelect: function () {
             if (this.selected) {
                 this.selected = false;
+                app.selectedFiles.splice(app.selectedFiles.indexOf(this.fileItem.id), 1);
+                console.log(app.selectedFiles);
             } else {
                 this.selected = true;
+                app.selectedFiles.push(this.fileItem.id);
+                console.log(app.selectedFiles);
             }
         },
         openFileFolder: function () {
@@ -338,6 +342,7 @@ var app = new Vue({
                 body: "",
                 footer: "",
             },
+            selectedFiles: [],
         }
     },
     computed: {
@@ -358,6 +363,54 @@ var app = new Vue({
             this.openBreadcrumb = newFileData['breadcrumb'];
             this.projectContributers = newFileData['contributers'];
             this.projectFiles = newFileData['proj_files'];
+        },
+        deleteFiles: function() {
+            
+            console.log("deleting:");
+            console.log(this.selectedFiles);
+
+            let postData = JSON.stringify({
+                action: "delete_files",
+                files: this.selectedFiles,
+                prev_breadcrumb: this.openBreadcrumb,
+            });
+            var self = this;
+            fetch(app.postTo, {
+                method: 'post',
+                credentials: "same-origin",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: postData,
+
+            }).then(
+                function (response) {
+                    if (response.status != 200) {
+                        console.log('Looks like there was a problem. Status Code: ' +
+                            response.status);
+                        return;
+                    }
+
+                    //check for redirect response 
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+
+                    //check response data
+                    response.json().then(function (data) {
+
+                        fileData = data;
+                        console.log("received:");
+                        console.log(fileData);
+                        self.implementChanges(fileData);
+                        $('#universalModal').modal('toggle');
+                    });
+                }
+            ).catch(function (err) {
+                console.log('Fetch Error :-S', err);
+            });
         },
         createFolder: function () {
             var folderName = document.getElementById('enter-folder-name').value;
@@ -420,6 +473,36 @@ var app = new Vue({
                 console.log('Fetch Error :-S', err);
             });
         },
+        deleteFilesDialog: function() {
+            if (this.selectedFiles.length < 1) {
+                return
+            } else if (this.selectedFiles.length > 1) {
+                this.createDialog({
+                    header: "Delete Files",
+                    body: `
+                    This will delete all selected files and all of their contents. Do you wish to continue?
+                    `,
+                    footer: `
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary"
+                    id="delete-button">Delete</button>
+                    `,
+                });
+            } else {
+                this.createDialog({
+                    header: "Delete File",
+                    body: `
+                    This will delete the selected file and all of its contents. Do you wish to continue?
+                    `,
+                    footer: `
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary"
+                    id="delete-button">Delete</button>
+                    `,
+                });
+            }
+            
+        },
         createFolderDialog: function () {
             this.createDialog({
                 header: "Create New Folder",
@@ -468,6 +551,8 @@ var app = new Vue({
              */
             if (e.target.matches('#create-button-fold')) {
                 this.createFolder();
+            } else if (e.target.matches('#delete-button')) {
+                this.deleteFiles();
             }
         },
     },
@@ -516,7 +601,9 @@ var app = new Vue({
                                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                                 <button class="btn btn-outline-success my-2 my-sm-0 disabled" type="submit">Search</button>
                             </form>
-                            <div class="control-icon">
+                            <div class="control-icon"
+                            v-bind:class="{'control-icon-disabled' : this.selectedFiles.length < 1}"
+                            @click="deleteFilesDialog">
                                 <!-- TODO: add @click event-->
                                 <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>

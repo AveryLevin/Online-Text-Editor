@@ -69,6 +69,10 @@ body {
     background-color: #f3f3f3;
 }
 
+.control-icon-disabled {
+    color: lightgray !important;
+}
+
 .control-icon {
     color: gray;
     float: right;
@@ -80,6 +84,10 @@ body {
 .control-icon:hover {
     cursor: pointer;
     color: black;
+}
+.control-icon-disabled:hover {
+    cursor: auto !important;
+    color: lightgray !important;
 }
 
 .search-bar {

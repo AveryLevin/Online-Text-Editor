@@ -39,11 +39,20 @@ def project_home(request, proj_id):
             if action == 'create_folder':
                 folder_name = data.get('name')
                 if open_project == currently_open:
-                    new_folder = ProjItem(name=folder_name, root_proj=open_project, is_folder=True)
+                    new_folder = ProjItem(
+                        name=folder_name, root_proj=open_project, is_folder=True)
                 else:
-                    new_folder = ProjItem(name=folder_name, folder_dir=currently_open, is_folder=True)
+                    new_folder = ProjItem(
+                        name=folder_name, folder_dir=currently_open, is_folder=True)
                 new_folder.save()
                 breadcrumb = prev_breadcrumb
+            elif action == 'delete_files':
+                for file_id in data.get('files'):
+                    file = ProjItem.objects.get(pk=file_id)
+                    print("deleting", file.name)
+                    file.soft_deleted = True
+                    file.save()
+                    breadcrumb = prev_breadcrumb
             else:
                 file_id = data.get('id')
 
@@ -59,7 +68,7 @@ def project_home(request, proj_id):
                         'is_root') else ProjItem.objects.get(pk=file_id)
                     # TODO: check that ProjItem is in same project as currently_open
                     breadcrumb = prev_breadcrumb[:1 +
-                                                prev_breadcrumb.index(data.get('this_breadcrumb'))]
+                                                 prev_breadcrumb.index(data.get('this_breadcrumb'))]
 
                 print("opening:", file_to_open)
                 currently_open = file_to_open
