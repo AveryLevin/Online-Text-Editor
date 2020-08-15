@@ -23,7 +23,7 @@ class Project(models.Model):
 
 class FileItem(models.Model):
     # container = one-to-one(ProjItem)
-    contents = models.TextField()
+    contents = models.TextField(default="")
     file_extension = models.CharField(max_length=10)
     language = models.ForeignKey(
         ProgrammingLanguage, null=True, on_delete=models.SET_NULL)

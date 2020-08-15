@@ -364,8 +364,8 @@ var app = new Vue({
             this.projectContributers = newFileData['contributers'];
             this.projectFiles = newFileData['proj_files'];
         },
-        deleteFiles: function() {
-            
+        deleteFiles: function () {
+
             console.log("deleting:");
             console.log(this.selectedFiles);
 
@@ -473,7 +473,83 @@ var app = new Vue({
                 console.log('Fetch Error :-S', err);
             });
         },
-        deleteFilesDialog: function() {
+        createFile: function () {
+            var fileName = document.getElementById('enter-folder-name').value;
+
+            if (fileName == 'Enter name' || fileName == '') {
+                console.log("invalid name")
+                this.modalData.body = `
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    Please give the file a name.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                ` + this.modalData.body;
+                return;
+            }
+
+            console.log("craeating project: " + fileName);
+
+            let postData = JSON.stringify({
+                action: "create_file",
+                name: fileName,
+                prev_breadcrumb: this.openBreadcrumb,
+            });
+            var self = this;
+            fetch(app.postTo, {
+                method: 'post',
+                credentials: "same-origin",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: postData,
+
+            }).then(
+                function (response) {
+                    if (response.status != 200) {
+                        console.log('Looks like there was a problem. Status Code: ' +
+                            response.status);
+                        return;
+                    }
+
+                    //check for redirect response 
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+
+                    //check response data
+                    response.json().then(function (data) {
+
+                        if ('failed' in data) {
+                            console.log("invalid name")
+                            self.modalData.body = `
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                Invalid file extension. 
+                                <br>
+                                Supported file types:
+                                ` + data['validExtensions'] + `
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            ` + self.modalData.body;
+                            return;
+                        }
+                        fileData = data;
+                        console.log("received:");
+                        console.log(fileData);
+                        self.implementChanges(fileData);
+                        $('#universalModal').modal('toggle');
+                    });
+                }
+            ).catch(function (err) {
+                console.log('Fetch Error :-S', err);
+            });
+        },
+        deleteFilesDialog: function () {
             if (this.selectedFiles.length < 1) {
                 return
             } else if (this.selectedFiles.length > 1) {
@@ -501,7 +577,28 @@ var app = new Vue({
                     `,
                 });
             }
-            
+
+        },
+        createFileDialog: function () {
+            this.createDialog({
+                header: "Create New File",
+                body: `
+                <div class="form-group>
+                    <label for="enter-folder-name">
+                        File Name:
+                    </label>
+                    <input 
+                    class="form-control" 
+                    id="enter-folder-name"
+                    placeholder="Enter name">
+                </div>
+                `,
+                footer: `
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary"
+                id="create-button-file">Create</button>
+                `,
+            });
         },
         createFolderDialog: function () {
             this.createDialog({
@@ -523,9 +620,6 @@ var app = new Vue({
                 id="create-button-fold">Create</button>
                 `,
             });
-        },
-        createFileDialog: function () {
-
         },
         createDialog: function (dialogContent) {
             // check if dictionary provided
@@ -553,6 +647,8 @@ var app = new Vue({
                 this.createFolder();
             } else if (e.target.matches('#delete-button')) {
                 this.deleteFiles();
+            } else if (e.target.matches('#create-button-file')) {
+                this.createFile();
             }
         },
     },
@@ -619,7 +715,8 @@ var app = new Vue({
                                     <path fill-rule="evenodd" d="M13 12.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0v-2z"/>
                                 </svg>    
                             </div>
-                            <div class="control-icon">
+                            <div class="control-icon"
+                            @click="createFileDialog">
                                 <!-- TODO: add @click event-->
                                 <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-file-earmark-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M9 1H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h5v-1H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h5v2.5A1.5 1.5 0 0 0 10.5 6H13v2h1V6L9 1z"/>
