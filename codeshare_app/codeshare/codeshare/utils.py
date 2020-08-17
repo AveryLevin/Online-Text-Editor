@@ -112,3 +112,15 @@ def load_project_home_json(breadcrumb, currently_open, open_project):
         'proj_files': put_in_json_format(get_files_in_proj_or_folder(currently_open), 'files'),
         'contributers': put_in_json_format(get_contributers(open_project), 'users'),
     }
+
+def get_valid_file_extensions():
+    """Returns all currently supported file extensions"""
+    return [file_type.file_extension for file_type in ProgrammingLanguage.objects.all()]
+
+def get_file_type_from_extension(extension):
+    """Returns the designated file type if provided file extension is 
+    one recognized by the current system"""
+    valid_extensions = get_valid_file_extensions()
+    if extension in valid_extensions:
+        return ProgrammingLanguage.objects.get(file_extension=extension)
+        

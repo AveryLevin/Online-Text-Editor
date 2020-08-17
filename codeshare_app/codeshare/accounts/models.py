@@ -11,7 +11,7 @@ class UserAccount(models.Model):
 
     # accessible_projects = many-to-many(Project)
 
-    preferences = JSONField(blank=True, default=dict)
+    # preferences = JSONField(blank=True, default=dict)
 
     # friends =
 

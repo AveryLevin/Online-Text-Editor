@@ -135,13 +135,51 @@ def user_create(request):
         if request.method == 'POST':
             # read raw data from forms
             user_form = UserForm(data=request.POST)
-            profile_form = UserProfileForm(data=request.POST)
+            account_form = UserAccountForm(data=request.POST)
 
-        context = {
-            'logged_in': False,
-            'user': user
-        }
-        return render(request, 'accounts/user_create.html', context)
+            # check if forms are valid
+            if user_form.is_valid() and account_form.is_valid():
+                # save data to database
+                user = user_form.save()
+
+                # hash password
+                user.set_password(user.password)
+                # update saved user
+                user.save()
+
+                # create a UserProfile instance.
+                # Don't commit to DB yet to add attributes
+                profile = account_form.save(commit=False)
+                profile.user = user
+
+                # now save profile
+                profile.save()
+
+                # save username for redir
+                username = user.username
+
+                # update state var
+                registered = True
+
+                #login user
+                login(request, user)
+                return HttpResponseRedirect(reverse('account:user_home'))
+            else:
+                # dump error log
+                print(user_form.errors, account_form.errors)
+        
+        else:
+            # Not a POST method.
+            # render the form using two ModelForm instances
+            user_form = UserForm()
+            account_form = UserAccountForm()
+
+            context = {
+                'logged_in': False,
+                'user_form': user_form,
+                'account_form': account_form,
+            }
+            return render(request, 'accounts/user_create.html', context)
 
 
 def user_pref(request):

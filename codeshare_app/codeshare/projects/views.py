@@ -5,24 +5,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from accounts.views import get_user_or_None
 from .models import Project, ProjItem, FileItem
-from codeshare.utils import put_in_json_format, get_files_in_proj_or_folder, load_project_home_json
+from codeshare.utils import put_in_json_format, get_files_in_proj_or_folder, load_project_home_json, get_valid_file_extensions, get_file_type_from_extension
 from code_editor.views import project_edit
 from code_editor.models import ProgrammingLanguage
 
 import json
 
 # === UTILITIES ===
-
-def get_valid_file_extensions():
-    """Returns all currently supported file extensions"""
-    return [file_type.file_extension for file_type in ProgrammingLanguage.objects.all()]
-
-def get_file_type_from_extension(extension):
-    """Returns the designated file type if provided file extension is 
-    one recognized by the current system"""
-    valid_extensions = get_valid_file_extensions()
-    if extension in valid_extensions:
-        return ProgrammingLanguage.objects.get(file_extension=extension)
 
 def get_item_proj(item):
     pass

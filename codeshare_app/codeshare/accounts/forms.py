@@ -14,10 +14,10 @@ class UserForm(forms.ModelForm):
         fields = ('username', 'email', 'password',)
 
 class UserAccountForm(forms.ModelForm):
-    """Form definition for UserProfile."""
+    """Form definition for UserAccount."""
 
     class Meta:
-        """Meta definition for UserProfileform."""
+        """Meta definition for UserAccountform."""
 
         model = UserAccount
-        fields = ('preferences',)
+        fields = ()

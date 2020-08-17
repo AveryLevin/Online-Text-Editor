@@ -11,7 +11,7 @@
 
 
 {% block title %}
-Codeshare Create Account
+Create Codeshare Account
 {% endblock %}
 
 
@@ -28,7 +28,8 @@ Codeshare Create Account
         </svg>
         <br>
         <h2> Create Account </h2>
-        <form id="login_form" action="{% url 'account:user_create' %}" method="post">
+        <form id="create_form" action="{% url 'account:user_create' %}" method="post">
+            <!--
             <div class="form-group">
                 <label for="InputUsername">Username</label>
                 <input type="text" name="username" class="form-control" id="InputUsername"
@@ -39,6 +40,18 @@ Codeshare Create Account
                 <input type="password" name="password" class="form-control" id="InputPassword">
             </div>
             <button type="submit" class="btn btn-primary">Create</button>
+            -->
+            {% for field in user_form %}
+            <div class="form-group">
+                <label for="InputUsername">
+                    {{ field.label_tag }}</label>
+                {{ field }}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Create</button>
+            <div hidden>
+                {{ account_form.as_p }}
+            </div>
             {% csrf_token %}
         </form>
     </div>

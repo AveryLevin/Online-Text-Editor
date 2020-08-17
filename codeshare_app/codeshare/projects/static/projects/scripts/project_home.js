@@ -693,7 +693,7 @@ var app = new Vue({
                 <div class="row" style="height: calc(100% - 65px); margin: 0px;">
                     <div class="project-panel proj-container col-8">
                         <div class="proj-toolbar"> 
-                            <form class="form-inline search-bar">
+                            <form class="form-inline search-bar d-none">
                                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                                 <button class="btn btn-outline-success my-2 my-sm-0 disabled" type="submit">Search</button>
                             </form>
@@ -742,13 +742,13 @@ var app = new Vue({
                         <div class="contributers-panel proj-container">
                             <div class="proj-toolbar">
                                 <span class="contr-title">Contributers</span>
-                                <div class="control-icon">
+                                <div class="control-icon control-icon-disabled">
                                     <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-dash-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
                                         <path fill-rule="evenodd" d="M3.5 8a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5z"/>
                                     </svg>
                                 </div>
-                                <div class="control-icon">
+                                <div class="control-icon control-icon-disabled">
                                     <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-plus-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
                                         <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
@@ -763,7 +763,7 @@ var app = new Vue({
                             </div>
                         </div>
                         <div class="submit-panel">
-                            <button type="button" class="btn btn-success">Publish</button
+                            <button type="button" class="btn btn-success" disabled>Publish</button
                         </div>
                     </div>
                 </div>

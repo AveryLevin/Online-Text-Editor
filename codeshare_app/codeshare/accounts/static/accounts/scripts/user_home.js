@@ -332,7 +332,7 @@ var app = new Vue({
                     v-bind:user="user"></user-item>
                 </ul>
                 <div class="container user-button-panel">
-                    <button type="button" class="btn btn-light">Find Other Users</button>
+                    <button type="button" class="btn btn-light" disabled>Find Other Users</button>
                 </div>
             </div>
         </div>
