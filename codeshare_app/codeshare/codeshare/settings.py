@@ -153,4 +153,4 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # TODO: add if using env variables
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
