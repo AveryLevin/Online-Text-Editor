@@ -1,5 +1,7 @@
-# Online-Text-Editor
-This project is an online code editor where users can create coding projects and share them with their freinds. The main goal of this project was to further familiarize myself with many of the Web Application Frameworks used today in professional software development. It initially was planned, designed, developed, and tested over the course of a few weeks and was designed in a way to allow for future features to be added on.
+# Online-Text-Editor       
+This project is an online code editor where users can create coding projects and share them with their freinds. The main goal of this project was to further familiarize myself with many of the Web Application Frameworks used today in professional software development. It initially was planned, designed, developed, and tested over the course of a few weeks and was designed in a way to allow for future features to be added on.      
+
+[Live Demo](https://my-codeshare.herokuapp.com/)      
 
 ## Project Features:
 >__Dynamic page rendering__: Uses Vue.js and fetch API to send data updates to and receive updates from the backend without reloading the page.  
