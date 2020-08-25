@@ -175,6 +175,7 @@ var app = new Vue({
         //projHomeData: projHomeData,
         projHomeData: null,
         activeFile: "main.py",
+        language: "python"
     },
     computed: {
         breadcrumbData: function () {
@@ -248,4 +249,4 @@ function createEditor(language, highlighting) {
             });
 }
 
-var editor = new createEditor("python", "xq-light");
+var editor = new createEditor(app.language, "xq-light");

@@ -112,7 +112,7 @@ def project_edit(request, proj_id, file_id):
                 return JsonResponse(data=request.session.get('file_context'))
             elif action == 'save_file':
                 updated_code = data.get('new_content')
-                file_id = data.get('file_id')        
+                file_id = data.get('file_id')
                 open_file = ProjItem.objects.get(pk=file_id)
                 open_file.file_contents.contents = updated_code
                 open_file.file_contents.save()
@@ -158,6 +158,7 @@ def project_edit(request, proj_id, file_id):
                         'breadcrumb': breadcrumb,
                         'proj_files': files,
                         'file_content': open_file.file_contents.contents,
+                        'language': open_file.file_contents.language.cm_name
                     }
                     return JsonResponse(context)
                     # END POST
@@ -169,6 +170,7 @@ def project_edit(request, proj_id, file_id):
         'breadcrumb': breadcrumb,
         'proj_files': files,
         'file_content': open_file.file_contents.contents,
+        'language': open_file.file_contents.language.cm_name
     }
     return render(request, 'code_editor/project_edit.html', context)
 

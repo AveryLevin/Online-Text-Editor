@@ -1,5 +1,8 @@
 Vue.config.devtools = true;
 
+var perf1 = 0;
+var perf2 = 0;
+
 var supportedLangs = {
     "python": `def myfunc():
     print("Hello World!")
@@ -117,6 +120,8 @@ function getCookie(name) {
 var openBreadcrumb = JSON.parse(document.getElementById('breadcrumb').textContent);
 var projectFiles = JSON.parse(document.getElementById('proj-files').textContent);
 var fileContent = JSON.parse(document.getElementById('file-content').textContent);
+var language = JSON.parse(document.getElementById('language').textContent);
+
 console.log(fileContent);
 
 var openFileGlobal = null;
@@ -329,6 +334,8 @@ var app = new Vue({
         },
         selectedFiles: [],
         openFile: openFileGlobal,
+        language: language,
+        theme: "xq-light",
     },
     computed: {
         breadcrumbData: function () {
@@ -346,6 +353,7 @@ var app = new Vue({
     },
     methods: {
         saveFile: function () {
+            perf1 = performance.now();
             var updatedCode = editor.getValue();
 
             let postData = JSON.stringify({
@@ -378,6 +386,8 @@ var app = new Vue({
                         saveStatus = data;
                         console.log("saving:");
                         console.log(saveStatus.save_status);
+                        perf2 = performance.now()
+                        console.log("time to transmit/receive save: " + (perf2 - perf1) + " milliseconds.");
                         // TODO: create toast for successful save
                     });
                 }
@@ -390,6 +400,7 @@ var app = new Vue({
             console.log(newFileData)
             this.openBreadcrumb = newFileData['breadcrumb'];
             this.projectFiles = newFileData['proj_files'];
+            this.language = newFileData['language'];
             if ('file_content' in newFileData) {
                 this.fileContent = newFileData['file_content'];
                 var rVal = null;
@@ -406,7 +417,9 @@ var app = new Vue({
         refreshCodeMirror: function () {
             console.log("attempting to refresh editor");
             console.log(this.fileContent);
-            editor.getDoc().setValue(this.fileContent);
+            editor.toTextArea();
+            document.getElementById('editor').value = this.fileContent;
+            editor = new createEditor(this.language, this.theme);
         },
         deleteFiles: function () {
 
@@ -822,4 +835,4 @@ function createEditor(language, highlighting) {
             });
 }
 
-var editor = new createEditor("python", "xq-light");
+var editor = new createEditor(app.language, app.theme);

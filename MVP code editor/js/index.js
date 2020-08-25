@@ -131,6 +131,7 @@ function createEditor(language, highlighting) {
                 lineWrapping: true,
                 foldGutter: true,
                 gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                scrollbarStyle: "overlay",
             });
 }
 

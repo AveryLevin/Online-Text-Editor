@@ -8,6 +8,8 @@
 <script src="{% static 'code_editor/source/codemirror-5.55.0/lib/codemirror.js' %}"></script>
 <link rel="stylesheet" href="{% static 'code_editor/source/codemirror-5.55.0/lib/codemirror.css' %}">
 <script src="{% static 'code_editor/source/codemirror-5.55.0/mode/python/python.js' %}"></script>
+<script src="{% static 'code_editor/source/codemirror-5.55.0/mode/javascript/javascript.js' %}"></script>
+<script src="{% static 'code_editor/source/codemirror-5.55.0/mode/xml/xml.js' %}"></script>
 <script src="{% static 'code_editor/source/codemirror-5.55.0/addon/edit/closetag.js' %}"></script>
 <script src="{% static 'code_editor/source/codemirror-5.55.0/addon/fold/foldcode.js' %}"></script>
 <script src="{% static 'code_editor/source/codemirror-5.55.0/addon/fold/indent-fold.js' %}"></script>
@@ -30,7 +32,11 @@ Quick Code
 
 {% block body %}
 <div class="full-page w-100 h-100">
+    {% if logged_in %}
     {% include 'logged_in.html' %}
+    {% else %}
+    {% include 'logged_out.html' %}
+    {% endif %}
 
     <main class="proj-home-layout layout-gray-back">
         <div class="grid">

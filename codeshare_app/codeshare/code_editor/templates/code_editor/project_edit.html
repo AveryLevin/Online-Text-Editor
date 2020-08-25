@@ -8,10 +8,16 @@
 <script src="{% static 'code_editor/source/codemirror-5.55.0/lib/codemirror.js' %}"></script>
 <link rel="stylesheet" href="{% static 'code_editor/source/codemirror-5.55.0/lib/codemirror.css' %}">
 <script src="{% static 'code_editor/source/codemirror-5.55.0/mode/python/python.js' %}"></script>
+<script src="{% static 'code_editor/source/codemirror-5.55.0/mode/javascript/javascript.js' %}"></script>
+<script src="{% static 'code_editor/source/codemirror-5.55.0/mode/xml/xml.js' %}"></script>
+<script src="{% static 'code_editor/source/codemirror-5.55.0/mode/css/css.js' %}"></script>
+<script src="{% static 'code_editor/source/codemirror-5.55.0/mode/clike/clike.js' %}"></script>
 <script src="{% static 'code_editor/source/codemirror-5.55.0/addon/edit/closetag.js' %}"></script>
 <script src="{% static 'code_editor/source/codemirror-5.55.0/addon/fold/foldcode.js' %}"></script>
 <script src="{% static 'code_editor/source/codemirror-5.55.0/addon/fold/indent-fold.js' %}"></script>
+<script src="{% static 'code_editor/source/codemirror-5.55.0/addon/fold/xml-fold.js' %}"></script>
 <script src="{% static 'code_editor/source/codemirror-5.55.0/addon/fold/foldgutter.js' %}"></script>
+<script src="{% static 'code_editor/source/codemirror-5.55.0/addon/edit/matchtags.js' %}"></script>
 <link rel="stylesheet" href="{% static 'code_editor/source/codemirror-5.55.0/addon/fold/foldgutter.css' %}">
 <link rel="stylesheet" href="{% static 'code_editor/source/codemirror-5.55.0/addon/scroll/simplescrollbars.css' %}">
 <script src="{% static 'code_editor/source/codemirror-5.55.0/addon/scroll/simplescrollbars.js' %}"></script>
@@ -33,6 +39,7 @@
 {{ breadcrumb|json_script:"breadcrumb" }}
 {{ proj_files|json_script:"proj-files" }}
 {{ file_content|json_script:"file-content" }}
+{{ language|json_script:"language" }}
 
 <div class="full-page w-100 h-100">
     {% include 'logged_in.html' %}
