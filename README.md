@@ -13,8 +13,8 @@ This project is an online code editor where users can create coding projects and
 ## Technologies Used:
 >__Django__: for backend data management. Utilized the object-relational mapping layer to interact with the database.  
 >__Vue.js__: for frontend reactivity. Used along with fetch API to make live updates to both the back and frontend based off user input.  
->__CodeMirror__: for frontend implementation of a code editor
->__MySQL__: for local database.  
+>__CodeMirror__: for frontend implementation of a code editor      
+>__MySQL__: for local database.    
 >__PostgreSQL__: for hosted database.  
 
 ## Languages Used:
