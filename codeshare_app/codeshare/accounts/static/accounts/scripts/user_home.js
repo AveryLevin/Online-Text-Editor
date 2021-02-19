@@ -78,6 +78,7 @@ function getCookie(name) {
 
 var userProjsData = JSON.parse(document.getElementById('user-projs').textContent);
 var affiliatedUsers = JSON.parse(document.getElementById('aff-users').textContent);
+var addibleUsers = {};
 console.log(userProjsData);
 console.log(affiliatedUsers);
 
@@ -122,14 +123,16 @@ Vue.component('user-item', {
     delimiters: ['[[', ']]'],
     data: function () {
         return {
-
+            selected: false,
         }
     },
     props: {
         user: Object,
+        editable: Boolean,
     },
     template: `
-    <li class="list-group-item">
+    <li class="list-group-item"
+    v-bind:class="{select : selected}">
         <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-person-circle"
             fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="color: gray;">
             <path
@@ -145,7 +148,17 @@ Vue.component('user-item', {
 
     },
     methods: {
-
+        toggleSelect: function () {
+            if (this.selected) {
+                this.selected = false;
+                app.selectedUsers.splice(app.selectedUsers.indexOf(this.fileItem.id), 1);
+                console.log(app.selectedUsers);
+            } else {
+                this.selected = true;
+                app.selectedFiles.push(this.fileItem.id);
+                console.log(app.selectedFiles);
+            }
+        },
     }
 });
 
@@ -160,6 +173,7 @@ var app = new Vue({
                 footer: "",
             },
             postTo: window.location.href,
+            addUsers: {},
         }
     },
     computed: {
@@ -168,7 +182,7 @@ var app = new Vue({
         },
         affiliatedUsers: function () {
             return affiliatedUsers;
-        }
+        },
     },
     methods: {
         createProject: function () {
@@ -223,11 +237,82 @@ var app = new Vue({
             });
 
         },
+        searchUser: function () {
+            // TODO: implement me!
+            var userName = document.getElementById('enter-user-name').value;
+
+            if (userName == "Enter user's name" || userName == '') {
+                console.log("invalid name")
+                this.modalData.body = `
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    Please give a valid username.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                ` + this.modalData.body;
+                return;
+            }
+
+            console.log("searching user: " + userName);
+
+            let postData = JSON.stringify({
+                action: "user_search",
+                name: userName,
+            });
+            var self = this;
+            fetch(app.postTo, {
+                method: 'post',
+                credentials: "same-origin",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: postData,
+
+            }).then(
+                function (response) {
+                    if (response.status == 400) {
+
+                    } else if (response.status != 200) {
+                        console.log('Looks like there was a problem. Status Code: ' +
+                            response.status);
+                        return;
+                    }
+
+                    //check for redirect response (should redir to new project)
+                    if (response.redirected) {
+                        // if redirected, a folder was selected, goTo projectHome page
+                        window.location.href = response.url;
+                    }
+
+                    //check response data
+                    response.json().then(function (data) {
+
+
+                        let userList = data;
+                        console.log("received:");
+                        self.addUsers = userList.users;
+                        console.log(self.addUsers);
+                        self.modalData.body = `
+                        <div class="container user-pane-title">
+                            Select Users to Add
+                        </div>
+                        `;
+                        //$('#universalModal').modal('toggle');
+                    });
+                }
+            ).catch(function (err) {
+                console.log('Fetch Error :-S', err);
+            });
+
+        },
         openCreateProjectDialog: function () {
             this.createDialog({
                 header: "Create New Project",
                 body: `
-                <div class="form-group>
+                <div class="form-group">
                     <label for="enter-proj-name">
                         Project Name:
                     </label>
@@ -244,6 +329,27 @@ var app = new Vue({
                 `,
             });
         },
+        openCreateFindFriendDialog: function () {
+            this.createDialog({
+                header: "Add New Friend",
+                body: `
+                <div class="form-group">
+                    <label for="enter-user-name">
+                        Search Users:
+                    </label>
+                    <input 
+                    class="form-control" 
+                    id="enter-user-name"
+                    placeholder="Enter user's name">
+                </div>
+                `,
+                footer: `
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary"
+                id="search-button">Search</button>
+                `,
+            });
+        },
         createDialog: function (dialogContent) {
             // check if dictionary provided
             try {
@@ -251,7 +357,7 @@ var app = new Vue({
                 this.modalData.body = dialogContent.body;
                 this.modalData.footer = dialogContent.footer;
                 console.log("creating modal");
-                $('#universalModal').modal('toggle')
+                $('#universalModal').modal('toggle');
             } catch (error) {
                 console.log("DIALOG ERROR: wrong content type provided");
                 console.log(error);
@@ -268,6 +374,8 @@ var app = new Vue({
              */
             if (e.target.matches('#create-button')) {
                 this.createProject();
+            } else if (e.target.matches('#search-button')) {
+                this.searchUser();
             }
         },
     },
@@ -292,6 +400,13 @@ var app = new Vue({
                             <div class="modal-body"
                             v-html="this.modalData.body">
                             </div>
+                        <ul class="modal-list list-group user-pane-list">
+                            <!-- for loop for user list. -->
+                            <user-item
+                            v-for="user in this.addUsers" 
+                            v-bind:user="user"
+                            editable=true>Test</user-item>
+                        </ul>
                         <div class="modal-footer"
                         v-html="this.modalData.footer"                        
                         @click="handleModalClick">
@@ -329,10 +444,11 @@ var app = new Vue({
                     <!-- for loop for user list. -->
                     <user-item
                     v-for="user in this.affiliatedUsers" 
-                    v-bind:user="user"></user-item>
+                    v-bind:user="user"
+                    editable=false></user-item>
                 </ul>
                 <div class="container user-button-panel">
-                    <button type="button" class="btn btn-light" disabled>Find Other Users</button>
+                    <button type="button" class="btn btn-light" @click="openCreateFindFriendDialog">Find Other Users</button>
                 </div>
             </div>
         </div>

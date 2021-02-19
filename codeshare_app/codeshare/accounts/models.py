@@ -13,7 +13,7 @@ class UserAccount(models.Model):
 
     # preferences = JSONField(blank=True, default=dict)
 
-    # friends =
+    friends = models.ManyToManyField('self', blank=True)
 
     def __str__(self):
         return self.user.username

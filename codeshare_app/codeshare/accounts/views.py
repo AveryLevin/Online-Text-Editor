@@ -38,11 +38,17 @@ def get_affiliated_users(user):
         affiliated_users.extend(get_contributers(proj))
 
     r_val = []
+    for friend in user.friends.all():
+        r_val.append(friend)
 
     for user in affiliated_users:
         if user not in r_val:
             r_val.append(user)
     return r_val
+
+def searchUsers(user_name, user):
+    # utilizes PostgreSQL search feature to find all related names
+    return UserAccount.objects.filter(user__username__icontains=user_name).exclude(user__id__exact=user.id)
 
 # === VIEWS ===
 
@@ -65,6 +71,23 @@ def user_home(request):
                     new_proj.save()
                     proj_id = new_proj.id
                     return HttpResponseRedirect(reverse('projects:project_home', kwargs={'proj_id': proj_id}))
+                elif action == 'user_search':
+                    user_name = data.get('name')
+                    print("search for:", user_name)
+                    if user_name:
+                        search_hits = searchUsers(user_name, user)
+                        print(search_hits)
+                        return JsonResponse({ 'users': put_in_json_format(search_hits, 'users')})
+                    else:
+                        return HttpResponse(status=404)
+                    # find user in DB
+                        # if not found through error, send JSON error prompting toast pop-up
+                    # add user to friends
+                    # send success JSON message
+                    pass
+                else:
+                    # invalid action
+                    return HttpResponse(status=500)
         else:
             context = {
                 'logged_in': True,
@@ -167,6 +190,8 @@ def user_create(request):
             else:
                 # dump error log
                 print(user_form.errors, account_form.errors)
+
+                # TODO: send error to frontend
         
         else:
             # Not a POST method.
